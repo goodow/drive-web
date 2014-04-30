@@ -1,0 +1,28 @@
+{
+  "name": "realtime-channel",
+  "version": "0.5.5",
+  "main": "./realtime-channel.js",
+  "dependencies": {
+    "bower-sockjs-client": "0.3.4"
+  },
+  "homepage": "https://github.com/goodow/bower-realtime-channel",
+  "authors": [
+    "Larry Tin <dev@goodow.com>"
+  ],
+  "description": "Event bus client over WebSocket for Java/Android/iOS/Javascript/GWT/J2ObjC",
+  "keywords": [
+    "EventBus",
+    "WebSocket",
+    "GWT"
+  ],
+  "license": "Apache 2.0",
+  "_release": "0.5.5",
+  "_resolution": {
+    "type": "version",
+    "tag": "v0.5.5",
+    "commit": "9b07974d93643bab7aa18a1c21b0464c5385f8cc"
+  },
+  "_source": "git://github.com/goodow/bower-realtime-channel.git",
+  "_target": "*",
+  "_originalSource": "goodow/bower-realtime-channel"
+}

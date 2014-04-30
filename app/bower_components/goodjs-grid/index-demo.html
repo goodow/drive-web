@@ -1,0 +1,109 @@
+<!doctype html>
+<html lang="en" ng-app="good">
+<head>
+    <meta charset="utf-8"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>My AngularJS App</title>
+    <link rel="stylesheet" href="bower_components/bootstrap/dist/css/bootstrap.css"/>
+</head>
+<body style="padding-top: 80px">
+<!--fixed top nav bar-->
+<div class="navbar navbar-inverse navbar-fixed-top" role="navigation">
+    <div class="container">
+        <div class="navbar-header">
+            <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
+                <span class="sr-only">Toggle navigation</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+            </button>
+            <a class="navbar-brand" href="#">Project name</a>
+        </div>
+        <div class="navbar-collapse collapse">
+            <ul class="nav navbar-nav">
+                <li class="active"><a href="#">Home</a></li>
+                <li><a href="#about">About</a></li>
+                <li><a href="#contact">Contact</a></li>
+                <li class="dropdown">
+                    <a href="#" class="dropdown-toggle" data-toggle="dropdown">Dropdown <b class="caret"></b></a>
+                    <ul class="dropdown-menu">
+                        <li><a href="#">Action</a></li>
+                        <li><a href="#">Another action</a></li>
+                        <li><a href="#">Something else here</a></li>
+                        <li class="divider"></li>
+                        <li class="dropdown-header">Nav header</li>
+                        <li><a href="#">Separated link</a></li>
+                        <li><a href="#">One more separated link</a></li>
+                    </ul>
+                </li>
+            </ul>
+            <!-- navbar-right-->
+            <!--
+            <ul class="nav navbar-nav navbar-right">
+              <li class="active"><a href="./">Fixed top</a></li>
+            </ul>
+          -->
+        </div>
+        <!--/.nav-collapse -->
+    </div>
+</div>
+<!--container   content-->
+<div class="container">
+    <div class="row">
+        <div class="col-md-3">
+            <div class="list-group">
+                <a href="#/helloworld1" class="list-group-item active">
+                    Helloworld1
+                </a>
+                <a href="#/helloworld2" class="list-group-item">Helloworld2</a>
+            </div>
+
+        </div>
+        <div class="col-md-9">
+            <div ng-controller="MyCtrl">
+                <!--
+                <div ng-repeat="data in tables">
+                    <div  good-grid good-index="{{data.index}}" good-type="{{data.type}}" good-url="{{data.url}}">
+                </div>
+                -->
+                <div good-grid table-data="{{tableData}}">
+                </div>
+            </div>
+        </div>
+    </div>
+    <!--footer-->
+    <div id="footer">
+        <div class="container">
+            <p class="text-muted">CopyRight @good</p>
+        </div>
+    </div>
+</div>
+<script type="text/javascript" src="bower_components/bower-sockjs-client/sockjs.min.js"></script>
+<script type="text/javascript" src="bower_components/realtime-channel/realtime-channel.js"></script>
+<script src="bower_components/jquery/dist/jquery.js"></script>
+<script src="bower_components/angular/angular.js"></script>
+<script src="goodjs-grid.js"></script>
+<script type="text/javascript">
+    var app = angular.module('good', ['good.ui.grid'])
+            .controller('MyCtrl', ['$scope', function ($scope) {
+                $scope.test = function () {
+                    $scope.test = "222222222222222222";
+                }
+
+                setTimeout(function () {
+                    $scope.$apply(function () {
+                        $scope.tableData = [
+                            {"_index": "benjamin", "_type": "test1", "_id": "kB8u_j2lQjKzEU_Y6moaOw", "_score": 1, "_source": {"name": "benjamin11", "age": "age11", "address": "北京11", "gender": 1, "email": "benjamin11@163.com"}},
+                            {"_index": "benjamin", "_type": "test1", "_id": "zxl2YPtrToGrGKxOnmVNBA", "_score": 1, "_source": {"name": "benjamin1", "age": "age1", "address": "北京1", "gender": 1, "email": "benjamin1@163.com"}},
+                            {"_index": "benjamin", "_type": "test1", "_id": "3b_I_2pvTlWy_ClkzXY67A", "_score": 1, "_source": {"name": "benjamin9", "age": "age9", "address": "北京9", "gender": 1, "email": "benjamin9@163.com"}},
+                            {"_index": "benjamin", "_type": "test1", "_id": "_WtFy1lCTcq39rqmyceA2A", "_score": 1, "_source": {"name": "benjamin12", "age": "age12", "address": "北京12", "gender": 0, "email": "benjamin12@163.com"}},
+                            {"_index": "benjamin", "_type": "test1", "_id": "dBbcmme3S1as4dPk25PfjA", "_score": 1, "_source": {"name": "benjamin4", "age": "age4", "address": "北京4", "gender": 0, "email": "benjamin4@163.com"}}
+                        ];
+                        $scope.tableTitle = 'hjgfjhgjhgjhgjhgjhgjh';
+                    });
+                }, 2000);
+
+            }]);
+</script>
+</body>
+</html>

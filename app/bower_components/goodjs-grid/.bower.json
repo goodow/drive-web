@@ -1,0 +1,21 @@
+{
+  "name": "goodjs-grid",
+  "description": "goodjs-ui component",
+  "dependencies": {
+    "realtime-channel": "goodow/bower-realtime-channel",
+    "d3": "3.4.6",
+    "angular-touch": "1.2.14",
+    "bootstrap": "3.1.1",
+    "angular-bootstrap": "0.10.0"
+  },
+  "homepage": "https://github.com/shangmin1990/bower-goodjs-grid",
+  "_release": "41017f281e",
+  "_resolution": {
+    "type": "branch",
+    "branch": "master",
+    "commit": "41017f281e78d988a9c327e0649183b1c8921bf7"
+  },
+  "_source": "git://github.com/shangmin1990/bower-goodjs-grid.git",
+  "_target": "*",
+  "_originalSource": "shangmin1990/bower-goodjs-grid"
+}
