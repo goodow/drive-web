@@ -1,0 +1,33 @@
+<div class="panel panel-info">
+    <!--
+    <div ng-repeat="data in tables">
+        <div  good-grid good-index="{{data.index}}" good-type="{{data.type}}" good-url="{{data.url}}">
+    </div>
+    -->
+    <div class="panel-heading ">
+        <!--<h3 class="panel-title">{{type}}
+            <button type="button" class="pull-right">
+                <span class="glyphicon glyphicon-search"></span>
+            </button>
+            <input type="text" class="pull-right"></h3>-->
+        <div class="row">
+            <div class="col-lg-6">
+                <h3 class="panel-title">{{type}}</h3>
+            </div>
+            <div class="col-lg-6 text-right" ng-show="type=='deviceActivity' || type == 'attachmentActivity'">
+                <input type="text" ng-model="queryString">
+                <button type="button" ng-click="queryMethod()">
+                    <span class="glyphicon glyphicon-search"></span>
+                </button>
+            </div>
+        </div>
+    </div>
+    <div good-grid table-data="{{datas}}"></div>
+    <div class="panel-footer text-center">
+        <button class="btn btn-default" style="margin-left: 5px" ng-click="prePage($event)">Pre</button>
+        <button class="btn {{page.className_}}" style="margin-left: 5px" ng-click="gotoPage(page.pageNo)"
+                ng-repeat="page in pageTotal">{{page.pageNo}}
+        </button>
+        <button class="btn btn-default" style="margin-left: 5px" ng-click="nextPage($event)">Next</button>
+    </div>
+</div>

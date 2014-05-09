@@ -1,0 +1,7 @@
+{
+  "name": "drive-web",
+  "dependencies": {
+    "angular-route":"1.2.14",
+    "goodjs-grid":"shangmin1990/bower-goodjs-grid"
+  }
+}

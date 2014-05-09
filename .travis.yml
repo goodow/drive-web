@@ -1,0 +1,22 @@
+language: node_js
+node_js:
+- 0.1
+before_script:
+- git config --global user.email "${GIT_EMAIL}"
+- git config --global user.name "${GIT_NAME}"
+- npm install -g bower
+script:
+- bower install
+- gulp
+after_script:
+- mkdir  ../gh-pages-web
+- cp -rf ./* ../gh-pages-web
+- cd ../gh-pages-web
+- git init
+- git remote add origin "https://${GIT_TOKEN}@github.com/wangwy/drive-web.git"
+- git add app/
+- git commit -m "generator by travis@${TRAVIS_COMMIT}"
+- git push -f origin HEAD:gh-pages
+env:
+  global:
+    secure: hEGZR6/GtkYH3mIGAzMV0JNFqDvpUYoKHoHy5kP3UREj/2lnF524Ijeinht1ywaYdjOmasozsQVXbrHMpqbmvx3bE100GwGmDW3vU7zBDynqRJbqXFgQc0IepNF7nXaQHdp9xA4uR4f2jH0EJsMbasPLQP0T5ZMoVsXemGvMlvw=
