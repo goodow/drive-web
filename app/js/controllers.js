@@ -5,113 +5,330 @@
 
 angular.module('drive.controllers',[])
     .controller('MenuCtrl',['$rootScope','$scope',function($rootScope,$scope){
-        var li1 = {"type":'attachment',"name":'文档管理'};
-        var li2 = {"type":'attachmentActivity',"name":'文档行为管理'};
-        var li3 = {"type":'device',"name":'设备管理'};
-        var li4 = {"type":'deviceActivity',"name":'设备行为管理'};
-        var menuList = [];
-        menuList.push(li1);
-        menuList.push(li2);
-        menuList.push(li3);
-        menuList.push(li4);
-        $scope.menuList = menuList;
-
-        $scope.setMenu = function(index) {
-            menuList.forEach(function(item){
-                item.className_ = '';
-            });
-            $scope.menuList[index].className_ = 'active';
-        }
+      var li1 = {"type":'attachment',"name":'文档管理'};
+      var li2 = {"type":'attachmentActivity',"name":'文档操作管理'};
+      var li3 = {"type":'device',"name":'设备管理'};
+      var li4 = {"type":'deviceActivity',"name":'设备操作管理'};
+      var menuList = [];
+//        menuList.push(li1);
+      menuList.push(li2);
+//        menuList.push(li3);
+      menuList.push(li4);
+      $scope.menuList = menuList;
+      $scope.setMenu = function(index) {
+        menuList.forEach(function(item){
+          item.className_ = '';
+        });
+        $scope.menuList[index].className_ = 'active';
+      }
     }])
-    .controller('DateCtrl',['$scope', '$routeParams','DataGridService',function($scope,$routeParams,DataGridService){
-        $scope.currentPage = 1;
-        var index = 'drive_test';
-        var type = $routeParams.type;
-        $scope.type = type;
-        var pageSize = 5;
-        var getData = function(message){
-            var datas = message.body().hits.hits;
-            var myDatas = [];
-            if('attachment' == type || 'device' == type){
-                for(var n = 0; n < datas.length; n++){
-                    var myData = {};
-                    myData._source = {"_id":datas[n]._id};
-                    for(var o in datas[n]._source){
-                        myData._source[o] = datas[n]._source[o]
-                    }
-                    myDatas.push(myData)
-                }
-            }else{
-                myDatas = datas;
-            }
-            if(datas.length !== 0){
-                $scope.$apply(function(){
-                    $scope.datas = myDatas;
-                    $scope.pageTotal = getPageTotal(Math.ceil(message.body().hits.total/pageSize) , $scope.currentPage);
-                });
-            }else{
-                //没有更多数据了,currentPage 已经加过1 不能再递增了,所以要减1来维持最大的页码,如果不减1,则currentPage会一直递增
-                 --$scope.currentPage;
-            }
+    .controller('AttachmentActivityCtrl',['$scope','bus','Constant','PaginationService','millionFormat','$log',function($scope,bus,Constant,PaginationService,millionFormat,$log){
+      var currentPage = 1;
+      var size = 5;
+      var index = 'drive_test';
+      var type = 'attachmentActivity';
+      var flag = true; //true向下翻，
+      $scope.title = '文档操作管理';
+      //两字段排序,如果open 与uid不能保持一至,则无法向上翻页
+      var searchParam = {
+        "action":'search',
+        '_index':index,
+        '_type':type,
+        source:{
+          sort:[
+            '_uid'
+          ],
+          'size':size
         }
-        var getPageTotal = function(totalPage,currentPage){
-            var outstr = [];
-            var viewedCount = 5;
-            function buildArray(i){
-                if(currentPage == i){
-                    outstr.push({"pageNo":i,"className_":'btn-primary'});
-                }else{
-                    outstr.push({"pageNo":i,"className_":'btn-default'});
-                }
+      };
+
+      var getQueryString = function(keyword){
+        var queryString = {match_all: {}};
+        if(keyword != '' || keyword.length != 0){
+          queryString =  {
+            "multi_match" : {
+              "query" : '"'+keyword+'"',
+              "fields" : ["title", "user", "userId"]
             }
-            //init Pages
-            var num2;
-            if(totalPage>viewedCount){
-                num2 = viewedCount;
-            }else{
-                num2 = totalPage;
-            }
-            for(var i=1;i<=num2 ;i++){
-                buildArray(i)
-            }
-            var num = Math.ceil(viewedCount/2);
-            if(currentPage >= num){
-                outstr = [];
-                var temp = currentPage+num;
-                if(temp>totalPage){
-                    for(var i=totalPage-viewedCount+1;i<=totalPage;i++){
-                        buildArray(i);
-                    }
-                }else{
-                    for(var i=currentPage-num+1;i<temp;i++){
-                        buildArray(i);
-                    }
-                }
-            }
-            return outstr;
+          }
         }
-        $scope.prePage = function(){
-            if($scope.currentPage <= 1){
-                $scope.currentPage = 1;
-            }
-            if($scope.currentPage != 1){
-                $scope.currentPage--;
-                DataGridService.getData(index,type,$scope.currentPage,pageSize ,getData);
-            }
+        return queryString;
+      };
+
+      var callback = function(message){
+        var datas = message.body().hits.hits;
+        if(!datas||datas.length == 0){
+          --currentPage;
+          return;
         }
-        $scope.nextPage = function(){
-            if($scope.currentPage <= 1){
-                $scope.currentPage = 1;
-            }
-            $scope.currentPage++;
-            DataGridService.getData(index,type,$scope.currentPage,pageSize ,getData);
+        for(var i=0;i<datas.length;i++){
+          datas[i]._source.duration = millionFormat(datas[i]._source.duration)
         }
-        $scope.gotoPage = function(pageNo){
-            if($scope.currentPage <= 1){
-                $scope.currentPage = 1;
-            }
-            $scope.currentPage = pageNo;
-            DataGridService.getData(index,type,$scope.currentPage,pageSize ,getData);
+        $scope.$apply(function(){
+          if(!flag&&!$scope.search_tx){
+            datas.reverse();
+          }
+          $scope.datas = datas;
+        });
+      };
+
+      bus().send(Constant.search_channel,searchParam,callback);
+      $scope.prePage = function(){
+        if(currentPage <= 1){
+          currentPage = 1;
         }
-        DataGridService.getData(index,type,1,pageSize ,getData);
-    }]);
+        if(currentPage != 1){
+          currentPage--;
+        }
+        flag = false;
+
+        var getFirstItem = function(items){
+          if(!items||!angular.isArray(items)||items.length == 0){
+            return null;
+          }
+          return items[0];
+        }
+        //$scope.datas array clone
+        var datas = angular.extend([],$scope.datas);
+//            if(datas.length < size)
+//                return;
+        var first = getFirstItem(datas);
+        if(first) {
+          var querydsl = PaginationService.buildQuery({'_uid':type+'#'+first._id},null,5,false);
+          if($scope.search_tx){
+            querydsl = {
+              query:getQueryString($scope.search_tx),
+              from:  (currentPage - 1) * 5,
+              size: 5
+            };
+          }else{
+            querydsl.sort.pop();
+            querydsl.sort.push({'_uid':'desc'})
+          }
+          searchParam.source = querydsl;
+          $log.log(JSON.stringify(searchParam));
+          bus().send(Constant.search_channel, searchParam, callback);
+        }
+      }
+      $scope.nextPage = function(){
+        if(currentPage <= 1){
+          currentPage = 1;
+        }
+
+        flag = true;
+        var getLastItem = function(items){
+          if(!items||!angular.isArray(items)||items.length == 0){
+            return null;
+          }
+          return items[size-1];
+        }
+        //$scope.datas array clone
+        var datas = angular.extend([],$scope.datas)
+        if(datas.length < size)
+          return;
+        currentPage++;
+        var last = getLastItem(datas);
+        if(last){
+          var querydsl = PaginationService.buildQuery({'_uid':type+'#'+last._id},null,5,true);
+          if($scope.search_tx){
+            querydsl = {
+              query:getQueryString($scope.search_tx),
+              from: (currentPage - 1) * 5,
+              size: 5
+            };
+          }
+          searchParam.source = querydsl;
+          $log.log(JSON.stringify(searchParam));
+          bus().send(Constant.search_channel,searchParam,callback);
+
+        }
+      }
+      $scope.searchClick = function(){
+        flag = true;
+        currentPage = 1;
+        if($scope.search_tx){
+          searchParam = {
+                  action: 'search',
+          _index: index,
+          _type: type,
+          source: {
+            query:getQueryString($scope.search_tx),
+            from: 0,
+            size: 5
+          },
+          search_type: 'query_then_fetch',
+          scroll: '5m'
+          };
+        }else{
+          searchParam = {
+            "action":'search',
+            '_index':index,
+            '_type':type,
+            source:{
+              sort:[
+                {'open':"desc"},
+                '_uid'
+              ],
+              'size':size
+            }
+          };
+        }
+        $log.log(JSON.stringify(searchParam));
+        bus().send(Constant.search_channel, searchParam, callback);
+      }
+    }])
+    .controller('DeviceActivityCtrl',['$scope','bus','Constant','PaginationService','millionFormat','$log',function($scope,bus,Constant,PaginationService,millionFormat,$log){
+      var currentPage = 1;
+      var size = 5;
+      var index = 'drive_test';
+      var type = 'deviceActivity';
+      var flag = true; //true向下翻，
+      $scope.title = '设备操作管理';
+      var searchParam = {
+        "action":'search',
+        '_index':index,
+        '_type':type,
+        source:{
+          sort:[
+            '_uid'
+          ],
+          'size':size
+        }
+      };
+
+      var getQueryString = function(keyword){
+        var queryString = {match_all: {}};
+        if(keyword != '' || keyword.length != 0){
+          queryString =  {
+            "multi_match" : {
+              "query" : '"'+keyword+'"',
+              "fields" : ["deviceId", "owner^2"]
+            }
+          }
+        }
+        return queryString;
+      };
+
+      var callback = function(message){
+        var datas = message.body().hits.hits;
+        if(!datas||datas.length == 0){
+          --currentPage;
+          return;
+        }
+        for(var i=0;i<datas.length;i++){
+          datas[i]._source.duration = millionFormat(datas[i]._source.duration)
+        }
+        $scope.$apply(function(){
+          if(!flag&&!$scope.search_tx){
+            datas.reverse();
+          }
+          $scope.datas = datas;
+        });
+      };
+      bus().send(Constant.search_channel,searchParam,callback);
+      $scope.prePage = function(){
+        if(currentPage <= 1){
+          currentPage = 1;
+        }
+        if(currentPage == 1){
+          return;
+        }
+        if(currentPage != 1){
+          currentPage--;
+        }
+        flag = false;
+
+        var getFirstItem = function(items){
+          if(!items||!angular.isArray(items)||items.length == 0){
+            return null;
+          }
+          return items[0];
+        }
+        //$scope.datas array clone
+        var datas = angular.extend([],$scope.datas);
+//            if(datas.length < size)
+//                return;
+        var first = getFirstItem(datas);
+        if(first) {
+          var querydsl = PaginationService.buildQuery({'_uid':type+'#'+first._id},null,5,false);
+          if($scope.search_tx){
+            querydsl = {
+              query:getQueryString($scope.search_tx),
+              from:  (currentPage - 1) * 5,
+              size: 5
+            };
+          }else{
+            querydsl.sort.pop();
+            querydsl.sort.push({'_uid':'desc'})
+          }
+          searchParam.source = querydsl;
+          $log.log(JSON.stringify(searchParam));
+          bus().send(Constant.search_channel, searchParam, callback);
+        }
+      }
+      $scope.nextPage = function(){
+        if(currentPage <= 1){
+          currentPage = 1;
+        }
+        flag = true;
+        var getLastItem = function(items){
+          if(!items||!angular.isArray(items)||items.length == 0){
+            return null;
+          }
+          return items[size-1];
+        }
+        //$scope.datas array clone
+        var datas = angular.extend([],$scope.datas)
+        if(datas.length < size)
+          return;
+        currentPage++;
+        var last = getLastItem(datas);
+        if(last){
+          var querydsl = PaginationService.buildQuery({'_uid':type+'#'+last._id},null,5,true);
+          if($scope.search_tx){
+            querydsl = {
+              query:getQueryString($scope.search_tx),
+              from: (currentPage - 1) * 5,
+              size: 5
+            };
+          }
+          searchParam.source = querydsl;
+          $log.log(JSON.stringify(searchParam));
+          bus().send(Constant.search_channel,searchParam,callback);
+
+        }
+      }
+      $scope.searchClick = function(){
+        flag = true;
+        currentPage = 1;
+        if($scope.search_tx){
+          searchParam = {
+            action: 'search',
+            _index: index,
+            _type: type,
+            source: {
+              query:getQueryString($scope.search_tx),
+              from: 0,
+              size: 5
+            },
+            search_type: 'query_then_fetch',
+            scroll: '5m'
+          };
+        }else{
+          searchParam = {
+            "action":'search',
+            '_index':index,
+            '_type':type,
+            source:{
+              sort:[
+                {"open":"desc"},
+                "_uid"
+              ],
+              'size':size
+            }
+          };
+        }
+        $log.log(JSON.stringify(searchParam));
+        bus().send(Constant.search_channel, searchParam, callback);
+      }
+    }])
