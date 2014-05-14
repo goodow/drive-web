@@ -1,0 +1,16 @@
+{
+    "name": "drive-web",
+    "version": "0.1.0",
+    "description": "drive-web",
+    "main": "gulpfile.js",
+    "devDependencies": {
+        "gulp": "~3.6.2",
+        "gulp-concat": "~2.2.0",
+        "gulp-uglify": "~0.2.1",
+        "gulp-cssmin": "~0.1.4"
+    },
+    "repository": {
+        "type": "git",
+        "url": "https://github.com/goodow/drive-web.git"
+    }
+}
