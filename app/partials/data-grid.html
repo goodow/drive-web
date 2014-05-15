@@ -5,7 +5,11 @@
     </div>
     -->
     <div class="panel-heading ">
-        <h3 class="panel-title">{{type}}</h3>
+        <h3 class="panel-title">{{title}}</h3>
+    </div>
+    <div style="margin: 10px 10px">
+        <input type="text" style="width:300px;float: left" class="form-control" placeholder="请输入关键字" ng-model="search_tx">
+        <button type="submit" style="clear: both;margin-left:10px" class="btn btn-default" ng-click="searchClick();"><span class="glyphicon glyphicon-search"></span></button>
     </div>
     <div good-grid table-data="{{datas}}"></div>
     <div class="panel-footer text-center">

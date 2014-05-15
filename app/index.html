@@ -52,7 +52,7 @@
     <div  class="row">
       <div class="col-md-3" ng-controller="MenuCtrl">
           <div class="list-group" >
-            <a href="#/datagrid/{{menu.type}}" ng-click="setMenu($index)" class="list-group-item {{menu.className_}}"  ng-repeat="menu in menuList">{{menu.name}}</a>
+            <a href="#/datagrid/{{menu.type}}" ng-click="setMenu($index)" class="list-group-item {{menu.className_}}"  ng-repeat="menu in menuList" ng-cloak>{{menu.name}}</a>
           </div>
       </div>
       <div class="col-md-9">
