@@ -22,7 +22,8 @@ angular.module('drive.controllers',[])
         $scope.menuList[index].className_ = 'active';
       }
     }])
-    .controller('AttachmentActivityCtrl',['$scope','bus','Constant','PaginationService','millionFormat','$log',function($scope,bus,Constant,PaginationService,millionFormat,$log){
+    .controller('AttachmentActivityCtrl',['$scope','bus','Constant','PaginationService','millionFormat','$log','messageService',function($scope,bus,Constant,PaginationService,millionFormat,$log,messageService){
+
       var currentPage = 1;
       var size = 5;
       var index = 'drive_test';
@@ -58,6 +59,7 @@ angular.module('drive.controllers',[])
       var callback = function(message){
         var datas = message.body().hits.hits;
         if(!datas||datas.length == 0){
+          messageService.toast('查询不到新数据哦！');
           --currentPage;
           return;
         }
@@ -81,6 +83,11 @@ angular.module('drive.controllers',[])
           currentPage--;
         }
         flag = false;
+
+        if(currentPage == 1){
+          messageService.toast('已经是第一页了哦！');
+          return;
+        }
 
         var getFirstItem = function(items){
           if(!items||!angular.isArray(items)||items.length == 0){
@@ -124,8 +131,11 @@ angular.module('drive.controllers',[])
         }
         //$scope.datas array clone
         var datas = angular.extend([],$scope.datas)
-        if(datas.length < size)
+        if(datas.length < size){
+          messageService.toast('没有更多数据了哦！');
           return;
+        }
+
         currentPage++;
         var last = getLastItem(datas);
         if(last){
@@ -177,7 +187,7 @@ angular.module('drive.controllers',[])
         bus().send(Constant.search_channel, searchParam, callback);
       }
     }])
-    .controller('DeviceActivityCtrl',['$scope','bus','Constant','PaginationService','millionFormat','$log',function($scope,bus,Constant,PaginationService,millionFormat,$log){
+    .controller('DeviceActivityCtrl',['$scope','bus','Constant','PaginationService','millionFormat','$log','messageService',function($scope,bus,Constant,PaginationService,millionFormat,$log,messageService){
       var currentPage = 1;
       var size = 5;
       var index = 'drive_test';
@@ -212,6 +222,7 @@ angular.module('drive.controllers',[])
       var callback = function(message){
         var datas = message.body().hits.hits;
         if(!datas||datas.length == 0){
+          messageService.toast('查询不到新数据哦！');
           --currentPage;
           return;
         }
@@ -231,6 +242,7 @@ angular.module('drive.controllers',[])
           currentPage = 1;
         }
         if(currentPage == 1){
+          messageService.toast('已经是第一页了哦！');
           return;
         }
         if(currentPage != 1){
@@ -279,8 +291,11 @@ angular.module('drive.controllers',[])
         }
         //$scope.datas array clone
         var datas = angular.extend([],$scope.datas)
-        if(datas.length < size)
+        if(datas.length < size){
+          messageService.toast('没有更多数据了哦！');
           return;
+        }
+
         currentPage++;
         var last = getLastItem(datas);
         if(last){

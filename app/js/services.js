@@ -250,4 +250,20 @@ angular.module('drive.services', [])
 //            }
 
         };
-    });
+    })
+    //How to Use
+    // 注入messageService
+    //messageService.toast('Test');
+    .factory('messageService',['$document','$log','$timeout','$compile','$rootScope','$window',function($document,$log,$timeout,$compile,$rootScope,$window){
+      return {
+        //content是要显示的内容
+        toast:function(content){
+          var messagePanel = angular.element('<toast>'+content+'</toast>');
+          $document.find('body').append(messagePanel);
+          var scope = $rootScope.$new(false);
+          scope.toastTitle = '提示';
+          $compile(messagePanel)(scope);
+
+        }
+      }
+    }])
