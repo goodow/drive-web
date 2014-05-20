@@ -16,7 +16,7 @@ angular.module('drive', [
       $routeProvider
           .when('/datagrid/attachment', {templateUrl: 'partials/data-grid.html',controller:'AttachmentCtrl'})
           .when('/datagrid/attachmentActivity', {templateUrl: 'partials/data-grid.html',controller:'AttachmentActivityCtrl'})
-          .when('/datagrid/device', {templateUrl: 'partials/data-grid.html',controller:'DeviceCtrl'})
+          .when('/datagrid/device', {templateUrl: 'partials/device.html',controller:'DeviceCtrl'})
           .when('/datagrid/deviceActivity', {templateUrl: 'partials/data-grid.html',controller:'DeviceActivityCtrl'});
     }])
 //
