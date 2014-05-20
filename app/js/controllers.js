@@ -79,15 +79,16 @@ angular.module('drive.controllers',[])
         if(currentPage <= 1){
           currentPage = 1;
         }
-        if(currentPage != 1){
-          currentPage--;
-        }
-        flag = false;
 
         if(currentPage == 1){
           messageService.toast('已经是第一页了哦！');
           return;
         }
+
+        if(currentPage != 1){
+          currentPage--;
+        }
+        flag = false;
 
         var getFirstItem = function(items){
           if(!items||!angular.isArray(items)||items.length == 0){
@@ -227,7 +228,9 @@ angular.module('drive.controllers',[])
           return;
         }
         for(var i=0;i<datas.length;i++){
-          datas[i]._source.duration = millionFormat(datas[i]._source.duration)
+          datas[i]._source.duration = millionFormat(datas[i]._source.duration);
+          datas[i]._source.状态 = 'action';
+          datas[i]._source.操作 = 'action';
         }
         $scope.$apply(function(){
           if(!flag&&!$scope.search_tx){
