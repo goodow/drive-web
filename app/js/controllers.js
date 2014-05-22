@@ -177,7 +177,7 @@ angular.module('drive.controllers',[])
             '_type':type,
             source:{
               sort:[
-                {'open':"desc"},
+//                {'open':"desc"},
                 '_uid'
               ],
               'size':size
@@ -213,7 +213,7 @@ angular.module('drive.controllers',[])
           queryString =  {
             "multi_match" : {
               "query" : '"'+keyword+'"',
-              "fields" : ["deviceId", "owner^2"]
+              "fields" : ["deviceId","address", "user^2"]
             }
           }
         }
@@ -239,6 +239,7 @@ angular.module('drive.controllers',[])
           $scope.datas = datas;
         });
       };
+      $log.log(JSON.stringify(searchParam));
       bus().send(Constant.search_channel,searchParam,callback);
       $scope.prePage = function(){
         if(currentPage <= 1){
@@ -339,7 +340,7 @@ angular.module('drive.controllers',[])
             '_type':type,
             source:{
               sort:[
-                {"open":"desc"},
+//                {"open":"desc"},
                 "_uid"
               ],
               'size':size
