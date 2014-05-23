@@ -377,7 +377,7 @@ angular.module('drive.controllers',[])
           queryString =  {
             "multi_match" : {
               "query" : '"'+keyword+'"',
-              "fields" : ["deviceId", "owner^2"]
+              "fields" : [ "owner^2", "registAddress"]
             }
           }
         }
@@ -385,7 +385,8 @@ angular.module('drive.controllers',[])
       };
 
       var callback = function(message){
-        $scope.btnText = [];
+        $scope.btnText = []; //操作按钮文字
+        $scope.statusText = []; //设备状态
         var datas = message.body().hits.hits;
         if(!datas||datas.length == 0){
           messageService.toast('查询不到新数据哦！');
@@ -393,9 +394,9 @@ angular.module('drive.controllers',[])
           return;
         }
 
-        for(var i=0;i<datas.length;i++){
-          datas[i]._source._id = datas[i]._id;
-        }
+//        for(var i=0;i<datas.length;i++){
+//          datas[i]._source._id = datas[i]._id;
+//        }
 
         $scope.$apply(function(){
           $scope.datas = datas;
@@ -412,14 +413,26 @@ angular.module('drive.controllers',[])
 
       var show = function (datas) {
         if (datas.length !== 0) {
-          var dataHeader = [];
+          var dataHeader = ["MAC地址"];
           var dataBody = [];
           var dataTr = [];
           for (var p in datas[0]._source) {
-            dataHeader.push(p);
+            switch (p){
+              case "code":
+                dataHeader.push("设备编码");
+                break;
+              case "owner":
+                dataHeader.push('使用学校');
+                break;
+              case "registAddress":
+                dataHeader.push('注册地址');
+                break;
+            }
           }
           for (var i = 0; i < datas.length; i++) {
+            dataTr.push(datas[i]._id);
             for (var p in datas[i]._source) {
+              if(p == "reset" || p == "lock" || p == "registCoordinates" || p =="radius")break;
               dataTr.push(datas[i]._source[p]);
             }
             dataBody.push(dataTr);
@@ -428,6 +441,26 @@ angular.module('drive.controllers',[])
               $scope.btnText.push('取消');
             }else{
               $scope.btnText.push('重置');
+            }
+            switch (datas[i]._source.lock){
+//              case 0:
+//                $scope.statusText.push('还未注册');
+//                break;
+//              case 1:
+//                $scope.statusText.push('正常使用');
+//                break;
+//              case 2:
+//                $scope.statusText.push('暂停使用');
+//                break;
+//              case 3:
+//                $scope.statusText.push('已经停用');
+//                break;
+              case 0:
+                $scope.statusText.push('正常使用');
+                break;
+              case 1:
+                $scope.statusText.push('已经锁定');
+                break;
             }
           }
           return {
@@ -537,7 +570,6 @@ angular.module('drive.controllers',[])
             '_type':type,
             source:{
               sort:[
-                {"open":"desc"},
                 "_uid"
               ],
               'size':size
@@ -578,11 +610,20 @@ angular.module('drive.controllers',[])
         });
       }
 
-      //重置按钮样式
-      $scope.resetBtn= function(value){
-        if(value[1]==1)
-          return "btn btn-default disabled"
-        else
-          return "btn btn-default";
+      $scope.statusColor = function(value){
+        switch (value){
+//          case '还未注册':
+//            return "text-muted";
+//          case "正常使用":
+//            return "text-success";
+//          case "暂停使用":
+//            return "text-warning";
+//          case "已经停用":
+//            return "text-danger";
+          case "正常使用":
+            return "text-success";
+          case "已经锁定":
+            return "text-warning";
+        }
       }
     }])
