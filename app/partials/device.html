@@ -18,8 +18,12 @@
             <tr ng-repeat="bodyTr in tableBody">
                 <th ng-repeat="bodyTd in bodyTr track by $index" >{{bodyTd}}</th>
                 <th class="col-md-1" ng-class="statusColor(statusText[$index])">{{statusText[$index]}}</th>
-                <th class="col-md-1"><button ng-class=" btnText[$index] == '重置'?'btn btn-default':'btn btn-danger'" ng-click="resetClick(bodyTr[0],$index);">{{btnText[$index]}}</button></th>
-            </tr></tbody>
+                <th class="col-md-1">
+                    <img ng-show="loadingStatus[$index]" src="img/loading.gif" style="height: 34px;width: 34px"/>
+                    <button ng-show="btnStatus[$index]" ng-class="btnText[$index] == '重置'?'btn btn-default':'btn btn-danger'" ng-click="resetClick(bodyTr[0],$index);">{{btnText[$index]}}</button>
+                </th>
+            </tr>
+            </tbody>
         </table>
     </div>
     <div class="panel-footer text-center">

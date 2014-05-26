@@ -402,6 +402,8 @@ angular.module('drive.controllers',[])
       var index = 'drive_test';
       var type = 'device';
       var flag = true; //true向下翻，
+      $scope.loadingStatus = [];
+      $scope.btnStatus = [];
       $scope.btnText = [];
       $scope.title = '设备管理';
       var searchParam = {
@@ -507,6 +509,8 @@ angular.module('drive.controllers',[])
                 $scope.statusText.push('已经锁定');
                 break;
             }
+            $scope.loadingStatus.push(false);
+            $scope.btnStatus.push(true);
           }
           return {
             tableHeader: dataHeader,
@@ -626,6 +630,8 @@ angular.module('drive.controllers',[])
       }
 
       $scope.resetClick = function(id,btnIndex){
+        $scope.loadingStatus[btnIndex] = !$scope.loadingStatus[btnIndex];
+        $scope.btnStatus[btnIndex] = !$scope.btnStatus[btnIndex];
         var getInfo = {
           action:'get',
           _index:index,
@@ -649,6 +655,8 @@ angular.module('drive.controllers',[])
           bus().send(Constant.search_channel, updateDevice, function(message){
             console.log(message.body());
             $scope.$apply(function(){
+              $scope.loadingStatus[btnIndex] = !$scope.loadingStatus[btnIndex];
+              $scope.btnStatus[btnIndex] = !$scope.btnStatus[btnIndex];
               $scope.btnText[btnIndex] = $scope.btnText[btnIndex] == '重置'?'取消':'重置';
             });
           });
