@@ -227,16 +227,61 @@ angular.module('drive.controllers',[])
           --currentPage;
           return;
         }
-        for(var i=0;i<datas.length;i++){
+        for (var i = 0; i < datas.length; i++) {
           datas[i]._source.duration = millionFormat(datas[i]._source.duration);
-          datas[i]._source.状态 = 'action';
-          datas[i]._source.操作 = 'action';
+          datas[i]._source.radius = Math.round(datas[i]._source.radius);
         }
         $scope.$apply(function(){
           if(!flag&&!$scope.search_tx){
             datas.reverse();
           }
           $scope.datas = datas;
+
+          if (datas.length !== 0) {
+            var dataHeader = [];
+            var dataBody = [];
+            var dataTr = [];
+            for (var p in datas[0]._source) {
+              switch (p) {
+                case "code":
+                  p = "编码";
+                  break;
+                case "deviceId":
+                  p = "MAC地址";
+                  break;
+                case "user":
+                  p = "学校";
+                  break;
+                case "address":
+                  p = "地址";
+                  break;
+                case "open":
+                  p = "开机时间";
+                  break;
+                case "duration":
+                  p = "持续时间";
+                  break;
+                case "coordinates":
+                  p = "经纬度";
+                  break;
+                case "radius":
+                  p = "精度";
+                  break;
+
+              }
+              dataHeader.push(p);
+            }
+            for (var i = 0; i < datas.length; i++) {
+              for (var p in datas[i]._source) {
+                dataTr.push(datas[i]._source[p]);
+              }
+              dataBody.push(dataTr);
+              dataTr = [];
+            }
+            $scope.tableHeader = dataHeader;
+            $scope.tableBody = dataBody;
+          }
+
         });
       };
       $log.log(JSON.stringify(searchParam));
