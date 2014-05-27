@@ -5,13 +5,14 @@
 
 angular.module('drive.controllers', [])
     .controller('MenuCtrl', ['$rootScope', '$scope', function ($rootScope, $scope) {
-      var li1 = {"type": 'attachment', "name": '文档管理'};
+      var li1 = {"type": 'attachment', "name": '文档播放统计'};
       var li2 = {"type": 'attachmentActivity', "name": '文档操作管理'};
       var li3 = {"type": 'device', "name": '设备管理'};
       var li4 = {"type": 'deviceActivity', "name": '设备操作管理'};
       var li5 = {"type": 'devicestatus', "name": '设备在线显示'}
+
       var menuList = [];
-//        menuList.push(li1);
+      menuList.push(li1);
       menuList.push(li2);
       menuList.push(li3);
       menuList.push(li4);
@@ -682,4 +683,283 @@ angular.module('drive.controllers', [])
             return "text-warning";
         }
       }
+    }])
+    .controller('AttachmentCtrl',['$scope','bus','Constant','PaginationService','millionFormat','$log','messageService',function($scope,bus,Constant,PaginationService,millionFormat,$log,messageService){
+      var currentPage = 1;
+      var size = 5;
+      var index = 'drive_test';
+      var type = 'attachment';
+      var flag = true; //true向下翻，
+      $scope.deviceOpen = []; // 设备总数
+      $scope.deviceData = []; //播放设备详情
+      $scope.openCount = []; //播放次数
+      $scope.openTime = []; //播放时长
+      $scope.title = '文档播放统计哦';
+      var searchParam = {
+        "action":'search',
+        '_index':index,
+        '_type':type,
+        source:{
+          sort:[
+            '_uid'
+          ],
+          'size':size
+        }
+      };
+
+      var getQueryString = function(keyword){
+        var queryString = {match_all: {}};
+        if(keyword != '' || keyword.length != 0){
+          queryString =  {
+            "multi_match" : {
+              "query" : '"'+keyword+'"',
+              "fields" : [ "title^2", "tags"]
+            }
+          }
+        }
+        return queryString;
+      };
+
+      var callback = function(message){
+        var datas = message.body().hits.hits;
+        if(!datas||datas.length == 0){
+          messageService.toast('查询不到新数据哦！');
+          --currentPage;
+          return;
+        }
+
+        $scope.$apply(function(){
+          $scope.datas = datas;
+          if(!flag&&!$scope.search_tx){
+            datas.reverse();
+          }
+          var tableInfo = show(datas);
+          //表头
+          $scope.tableHeader = tableInfo.tableHeader;
+          //表体
+          $scope.tableBody = tableInfo.tableBody;
+        });
+      };
+
+      var show = function (datas) {
+        if (datas.length !== 0) {
+          var dataHeader = ["文档编号"];
+          var dataBody = [];
+          var dataTr = [];
+          for (var p in datas[0]._source) {
+            switch (p){
+              case "title":
+                dataHeader.push("文档标题");
+                break;
+              case "contentType":
+                dataHeader.push('文档类型');
+                break;
+            }
+          }
+
+          for (var i = 0; i < datas.length; i++) {
+            dataTr.push(datas[i]._id);
+            for (var p in datas[i]._source) {
+              if(p == "contentLength" || p == "url" || p == "thumbnail" || p =="tags")break;
+              dataTr.push(datas[i]._source[p]);
+            }
+            dataBody.push(dataTr);
+            getOpenDeviceByFile(i,datas[i]._id);
+            dataTr = [];
+          }
+          return {
+            tableHeader: dataHeader,
+            tableBody: dataBody
+          };
+        }
+      }
+
+      bus().send(Constant.search_channel,searchParam,callback);
+      $scope.prePage = function(){
+        if(currentPage <= 1){
+          currentPage = 1;
+        }
+        if(currentPage == 1){
+          messageService.toast('已经是第一页了哦！');
+          return;
+        }
+        if(currentPage != 1){
+          currentPage--;
+        }
+        flag = false;
+
+        var getFirstItem = function(items){
+          if(!items||!angular.isArray(items)||items.length == 0){
+            return null;
+          }
+          return items[0];
+        }
+        //$scope.datas array clone
+        var datas = angular.extend([],$scope.datas);
+        var first = getFirstItem(datas);
+        if(first) {
+          var querydsl = PaginationService.buildQuery({'_uid':type+'#'+first._id},null,5,false);
+          if($scope.search_tx){
+            querydsl = {
+              query:getQueryString($scope.search_tx),
+              from:  (currentPage - 1) * 5,
+              size: 5
+            };
+          }else{
+            querydsl.sort.pop();
+            querydsl.sort.push({'_uid':'desc'})
+          }
+          searchParam.source = querydsl;
+          $log.log(JSON.stringify(searchParam));
+          bus().send(Constant.search_channel, searchParam, callback);
+        }
+      }
+      $scope.nextPage = function(){
+        if(currentPage <= 1){
+          currentPage = 1;
+        }
+        flag = true;
+        var getLastItem = function(items){
+          if(!items||!angular.isArray(items)||items.length == 0){
+            return null;
+          }
+          return items[size-1];
+        }
+        //$scope.datas array clone
+        var datas = angular.extend([],$scope.datas)
+        if(datas.length < size){
+          messageService.toast('没有更多数据了哦！');
+          return;
+        }
+
+        currentPage++;
+        var last = getLastItem(datas);
+        if(last){
+          var querydsl = PaginationService.buildQuery({'_uid':type+'#'+last._id},null,5,true);
+          if($scope.search_tx){
+            querydsl = {
+              query:getQueryString($scope.search_tx),
+              from: (currentPage - 1) * 5,
+              size: 5
+            };
+          }
+          searchParam.source = querydsl;
+          $log.log(JSON.stringify(searchParam));
+          bus().send(Constant.search_channel,searchParam,callback);
+
+        }
+      }
+      $scope.searchClick = function(){
+        flag = true;
+        currentPage = 1;
+        if($scope.search_tx){
+          searchParam = {
+            action: 'search',
+            _index: index,
+            _type: type,
+            source: {
+              query:getQueryString($scope.search_tx),
+              from: 0,
+              size: 5
+            },
+            search_type: 'query_then_fetch',
+            scroll: '5m'
+          };
+        }else{
+          searchParam = {
+            "action":'search',
+            '_index':index,
+            '_type':type,
+            source:{
+              sort:[
+                "_uid"
+              ],
+              'size':size
+            }
+          };
+        }
+        $log.log(JSON.stringify(searchParam));
+        bus().send(Constant.search_channel, searchParam, callback);
+      }
+
+      //某个设备上，某个文件播放次数
+      var getDeviceOpenCount = function(userId, attachmentId){
+        var source = {
+          "query": {
+            "bool": {
+              "must": [
+                {
+                  "term": {
+                    "userId": userId
+                  }
+                },
+                {
+                  "term": {
+                    "attachmentId": attachmentId
+                  }
+                }
+              ]
+            }
+          },
+          "from":0,
+          "size":0
+        };
+        var getDeviceOpen = {
+          "action":'search',
+          '_index':index,
+          '_type':"attachmentActivity",
+          source:source
+        };
+        bus().send(Constant.search_channel, getDeviceOpen, function(message){
+          $scope.$apply(function(){
+            $scope.deviceOpen.push(message.body().hits.total);
+          });
+        });
+      }
+
+      //根据文件获取播放过的设备
+      var getOpenDeviceByFile = function(lineNo,attachmentId) {
+        var source = {
+          "size" : 0,
+          "query" : {
+            "term" : { "attachmentId" : attachmentId }
+          },
+          "facets" : {
+            "tag" : {
+              "terms" : {
+                "fields" : ["userId"],
+                "size" :100000000
+              }
+            }
+          }
+        }
+        var getDevices = {
+          "action":'search',
+          '_index':index,
+          '_type':"attachmentActivity",
+          source:source
+        };
+        bus().send(Constant.search_channel, getDevices, function(message){
+          var Data = message.body().facets.tag.terms;
+          var openCount = 0;
+          for(var i = 0; i < Data.length; i++){
+            openCount = openCount+Data[i].count;
+          }
+          $scope.$apply(function(){
+            $scope.deviceData[lineNo] = Data;
+            $scope.deviceOpen[lineNo] = Data.length;
+            $scope.openCount[lineNo] = openCount;
+          });
+        });
+      }
+
+      $scope.detailClick = function(btnIndex){
+        var toastStr = "";
+        var data = $scope.deviceData[btnIndex];
+        for(var o in data){
+          toastStr = toastStr+"设备号:"+data[o].term+"  播放数:"+data[o].count +"</br>";
+        }
+        messageService.toast(toastStr);
+      }
+
     }])

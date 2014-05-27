@@ -14,7 +14,7 @@ angular.module('drive', [
 //  $locationProvider.html5Mode(true).hashPrefix('');
 //      $locationProvider.html5Mode(true);
       $routeProvider
-          .when('/datagrid/attachment', {templateUrl: 'partials/data-grid.html', controller: 'AttachmentCtrl'})
+          .when('/datagrid/attachment', {templateUrl: 'partials/documentStatistic.html', controller: 'AttachmentCtrl'})
           .when('/datagrid/attachmentActivity', {templateUrl: 'partials/data-grid.html', controller: 'AttachmentActivityCtrl'})
           .when('/datagrid/device', {templateUrl: 'partials/device.html', controller: 'DeviceCtrl'})
           .when('/datagrid/deviceActivity', {templateUrl: 'partials/deviceActivity.html', controller: 'DeviceActivityCtrl'})
