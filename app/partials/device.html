@@ -14,13 +14,16 @@
     <div>
         <table style="margin-bottom:0px"  class="table table-striped table-bordered table-hover table-condensed">
             <tbody>
-            <tr><th ng-repeat="headerTh in tableHeader">{{headerTh}}</th><th>设备状态</th><th>操作</th></tr>
+            <tr><th ng-repeat="headerTh in tableHeader">{{headerTh}}</th><th>设备状态</th><th>设备重置</th></tr>
             <tr ng-repeat="bodyTr in tableBody">
                 <th ng-repeat="bodyTd in bodyTr track by $index" >{{bodyTd}}</th>
-                <th class="col-md-1" ng-class="statusColor(statusText[$index])">{{statusText[$index]}}</th>
                 <th class="col-md-1">
-                    <img ng-show="loadingStatus[$index]" src="img/loading.gif" style="height: 34px;width: 34px"/>
-                    <button ng-show="btnStatus[$index]" ng-class="btnText[$index] == '重置'?'btn btn-default':'btn btn-danger'" ng-click="resetClick(bodyTr[0],$index);">{{btnText[$index]}}</button>
+                    <img ng-show="loadingStatus[$index][0]" src="img/loading.gif" style="height: 34px;width: 34px"/>
+                    <button ng-show="btnStatus[$index][0]" ng-class="statusText[$index] == '锁定'?'btn btn-default':'btn btn-danger'" ng-click="resetClick(bodyTr[0],$index,0);">{{statusText[$index]}}</button>
+                </th>
+                <th class="col-md-1">
+                    <img ng-show="loadingStatus[$index][1]" src="img/loading.gif" style="height: 34px;width: 34px"/>
+                    <button ng-show="btnStatus[$index][1]" ng-class="btnText[$index] == '重置'?'btn btn-default':'btn btn-danger'" ng-click="resetClick(bodyTr[0],$index,1);">{{btnText[$index]}}</button>
                 </th>
             </tr>
             </tbody>
