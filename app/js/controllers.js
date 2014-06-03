@@ -74,6 +74,45 @@ angular.module('drive.controllers', [])
             datas.reverse();
           }
           $scope.datas = datas;
+
+          if (datas.length !== 0) {
+            var dataHeader = [];
+            var dataBody = [];
+            var dataTr = [];
+            for (var p in datas[0]._source) {
+              switch (p) {
+                case "attachmentId":
+                  p = "文件编码";
+                  break;
+                case "open":
+                  p = "打开时间";
+                  break;
+                case "duration":
+                  p = "持续时间";
+                  break;
+                case "userId":
+                  p = "设备MAC";
+                  break;
+                case "title":
+                  p = "文件标题";
+                  break;
+                case "user":
+                  p = "所属校园";
+                  break;
+              }
+              dataHeader.push(p);
+            }
+            for (var i = 0; i < datas.length; i++) {
+              for (var p in datas[i]._source) {
+                dataTr.push(datas[i]._source[p]);
+              }
+              dataBody.push(dataTr);
+              dataTr = [];
+            }
+            $scope.tableHeader = dataHeader;
+            $scope.tableBody = dataBody;
+          }
+
         });
       };
 
