@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>科睿星综合管理系统</title>
+    <meta charset="utf-8"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <!-- Bootstrap -->
+    <link href="bower_components/bootstrap/dist/css/bootstrap.css" rel="stylesheet" >
+    <link rel="shortcut icon" href="img/favicon.ico" />
+</head>
+<body style="background: #555;">
+
+<div class="modal-dialog">
+    <div class="modal-content">
+        <div class="modal-header">
+            <h3>请登陆</h3>
+            <p>科睿星综合管理系统</p>
+        </div>
+        <div class="modal-body">
+            <form action="admin/user/login" method="post" accept-charset="utf-8">
+                <table class="table">
+                    <tr>
+                        <td>账号</td>
+                        <td><input type="text" name="email" value="" class="form-control" placeholder="请输入你的账号" /></td>
+                    </tr>
+                    <tr>
+                        <td>密码</td>
+                        <td><input type="password" name="密码" value="" class="form-control" placeholder="请输入你的密码" /></td>
+                    </tr>
+                    <tr>
+                        <td></td>
+                        <td><input type="submit" name="login" value="登陆" class="btn btn-primary btn-lg btn-block" /></td>
+                    </tr>
+                </table>
+            </form>
+        </div>
+        <div class="modal-footer">
+            © 科睿星
+        </div>
+    </div>
+</div>
+</body>
+</html>
