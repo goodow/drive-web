@@ -405,9 +405,10 @@ angular.module('drive.controllers', [])
       var index = 'drive_test';
       var type = 'device';
       var flag = true; //true向下翻，
-      $scope.loadingStatus = [];
-      $scope.btnStatus = [];
-      $scope.btnText = [];
+      $scope.loadingStatus = new Array(new Array(),new Array());
+      $scope.btnStatus = new Array(new Array(),new Array());
+      $scope.btnText = []; //操作按钮文字
+      $scope.statusText = []; //设备状态
       $scope.title = '设备管理';
       var searchParam = {
         "action": 'search',
@@ -435,8 +436,7 @@ angular.module('drive.controllers', [])
       };
 
       var callback = function(message){
-        $scope.btnText = []; //操作按钮文字
-        $scope.statusText = []; //设备状态
+
         var datas = message.body().hits.hits;
         if (!datas || datas.length == 0) {
           messageService.toast('查询不到新数据哦！');
@@ -487,33 +487,22 @@ angular.module('drive.controllers', [])
             }
             dataBody.push(dataTr);
             dataTr = [];
-            if (datas[i]._source.reset == 1) {
-              $scope.btnText.push('取消');
-            } else {
-              $scope.btnText.push('重置');
+            if(datas[i]._source.reset == 1){
+              $scope.btnText[i] = '取消';
+            }else{
+              $scope.btnText[i] = '重置';
             }
-            switch (datas[i]._source.lock){
-//              case 0:
-//                $scope.statusText.push('还未注册');
-//                break;
-//              case 1:
-//                $scope.statusText.push('正常使用');
-//                break;
-//              case 2:
-//                $scope.statusText.push('暂停使用');
-//                break;
-//              case 3:
-//                $scope.statusText.push('已经停用');
-//                break;
-              case 0:
-                $scope.statusText.push('正常使用');
-                break;
-              case 1:
-                $scope.statusText.push('已经锁定');
-                break;
+            if(datas[i]._source.lock == 0){
+              $scope.statusText[i] = '锁定';
+            }else{
+              $scope.statusText[i] = '解锁';
             }
-            $scope.loadingStatus.push(false);
-            $scope.btnStatus.push(true);
+            $scope.loadingStatus[i] = new Array();
+            $scope.btnStatus[i] = new Array();
+            $scope.loadingStatus[i][0] = false;
+            $scope.loadingStatus[i][1] = false;
+            $scope.btnStatus[i][0] = true;
+            $scope.btnStatus[i][1] = true;
           }
           return {
             tableHeader: dataHeader,
@@ -632,22 +621,22 @@ angular.module('drive.controllers', [])
         bus().send(Constant.search_channel, searchParam, callback);
       }
 
-      $scope.resetClick = function(id,btnIndex){
-        $scope.loadingStatus[btnIndex] = !$scope.loadingStatus[btnIndex];
-        $scope.btnStatus[btnIndex] = !$scope.btnStatus[btnIndex];
+      $scope.resetClick = function(id,btnIndex,btnPara){
+        $scope.loadingStatus[btnIndex][btnPara] = !$scope.loadingStatus[btnIndex][btnPara];
+        $scope.btnStatus[btnIndex][btnPara] = !$scope.btnStatus[btnIndex][btnPara];
         var getInfo = {
           action: 'get',
           _index: index,
           _type: type,
           _id: id
         }
-        bus().send(Constant.search_channel, getInfo, function (message) {
-
-          if ($scope.btnText[btnIndex] == '重置') {
-            message.body()._source.reset = 1;
-          } else {
-            message.body()._source.reset = 0;
+        bus().send(Constant.search_channel, getInfo, function(message){
+          if(btnPara == 0){
+            message.body()._source.lock = $scope.statusText[btnIndex] == '锁定'?1:0;
+          }else{
+            message.body()._source.reset = $scope.btnText[btnIndex] == '重置'?1:0;
           }
+
           var updateDevice = {
             action: 'index',
             _index: index,
@@ -655,33 +644,20 @@ angular.module('drive.controllers', [])
             _id: message.body()._id,
             source: message.body()._source
           }
-          bus().send(Constant.search_channel, updateDevice, function (message) {
+          console.log(updateDevice);
+          bus().send(Constant.search_channel, updateDevice, function(message){
             console.log(message.body());
             $scope.$apply(function(){
-              $scope.loadingStatus[btnIndex] = !$scope.loadingStatus[btnIndex];
-              $scope.btnStatus[btnIndex] = !$scope.btnStatus[btnIndex];
-              $scope.btnText[btnIndex] = $scope.btnText[btnIndex] == '重置'?'取消':'重置';
-
+              $scope.loadingStatus[btnIndex][btnPara] = !$scope.loadingStatus[btnIndex][btnPara];
+              $scope.btnStatus[btnIndex][btnPara] = !$scope.btnStatus[btnIndex][btnPara];
+              if(btnPara == 0){
+                $scope.statusText[btnIndex] = $scope.statusText[btnIndex] == '锁定'?'解锁':'锁定';
+              }else{
+                $scope.btnText[btnIndex] = $scope.btnText[btnIndex] == '重置'?'取消':'重置';
+              }
             });
           });
         });
-      }
-
-      $scope.statusColor = function(value){
-        switch (value){
-//          case '还未注册':
-//            return "text-muted";
-//          case "正常使用":
-//            return "text-success";
-//          case "暂停使用":
-//            return "text-warning";
-//          case "已经停用":
-//            return "text-danger";
-          case "正常使用":
-            return "text-success";
-          case "已经锁定":
-            return "text-warning";
-        }
       }
     }])
     .controller('AttachmentCtrl',['$scope','bus','Constant','PaginationService','millionFormat','$log','messageService',function($scope,bus,Constant,PaginationService,millionFormat,$log,messageService){
