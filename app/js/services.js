@@ -6,14 +6,30 @@
 
 angular.module('drive.services', [])
   .factory('bus', ['$window','Constant',function($window,Constant){
-        var  options = {debug:true, forkLocal:true};
-        var serverUrl = Constant.serverUrl;
-        var bus = new $window.good.channel.WebSocketBus(serverUrl,options);
-        return function(){
-
-            return bus;
-        }
+      var  options = {debug:true, forkLocal:true};
+      var serverUrl = Constant.serverUrl;
+      var bus = new $window.good.channel.WebSocketBus(serverUrl,options);
+      return function(){
+          return bus;
+      }
   }])
+  .factory('HeadData', function(){
+      var DashBoard = [{"type": 'attachmentBoard', "name": '文档统计'},{"type": 'deviceBoard', "name": '设备统计'}];
+      var SystemManage = [{"type": 'attachment', "name": '文档播放统计'},{"type": 'attachmentActivity', "name": '文档操作管理'},{"type": 'device', "name": '设备管理'},{"type": 'deviceActivity', "name": '设备操作管理'},{"type": 'devicestatus', "name": '设备在线显示'}];
+      var UserManage = [{"type": 'user1', "name": '用户管理1'},{"type": 'user2', "name": '用户管理2'}];
+      var ProfileManage = [{"type": 'profile1', "name": '个人中心1'},{"type": 'profile2', "name": '个人中心2'}];
+      var li1 = {"menu": DashBoard, "name": '统计报表', "className_":'active'};
+      var li2 = {"menu": SystemManage, "name": '系统管理', "className_":''};
+      var li3 = {"menu": UserManage, "name": '用户管理', "className_":''};
+      var li4 = {"menu": ProfileManage, "name": '个人中心', "className_":''};
+
+      var headList = [];
+      headList.push(li1);
+      headList.push(li2);
+      headList.push(li3);
+      headList.push(li4);
+      return headList;
+  })
   .factory('millionFormat',function(){
         return function(value){
             var theTime = parseInt(value);// 秒

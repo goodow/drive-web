@@ -4,22 +4,28 @@
 
 
 angular.module('drive.controllers', [])
-    .controller('MenuCtrl', ['$rootScope', '$scope', function ($rootScope, $scope) {
-      var li1 = {"type": 'attachment', "name": '文档播放统计'};
-      var li2 = {"type": 'attachmentActivity', "name": '文档操作管理'};
-      var li3 = {"type": 'device', "name": '设备管理'};
-      var li4 = {"type": 'deviceActivity', "name": '设备操作管理'};
-      var li5 = {"type": 'devicestatus', "name": '设备在线显示'}
-
-      var menuList = [];
-      menuList.push(li1);
-      menuList.push(li2);
-      menuList.push(li3);
-      menuList.push(li4);
-      menuList.push(li5);
-      $scope.menuList = menuList;
+    .controller('HeadCtrl', ['$rootScope', '$scope','HeadData', function ($rootScope, $scope, HeadData) {
+      $scope.headList = HeadData;
+      $scope.setHead = function (index) {
+        HeadData.forEach(function (item) {
+          item.className_ = '';
+        });
+        HeadData[index].className_ = 'active';
+        $scope.headList = HeadData;
+      }
+    }])
+    .controller('MenuCtrl', ['$rootScope', '$scope', 'HeadData', function ($rootScope, $scope, HeadData) {
+      $scope.headList = HeadData;
+      //监听service的变化
+      $scope.$watch('headList', function(newVal, oldVal) {
+        HeadData.forEach(function (item) {
+          if(item.className_ == 'active'){
+            $scope.menuList = item.menu;
+          }
+        });
+      }, true);
       $scope.setMenu = function (index) {
-        menuList.forEach(function (item) {
+        $scope.menuList.forEach(function (item) {
           item.className_ = '';
         });
         $scope.menuList[index].className_ = 'active';
