@@ -513,6 +513,9 @@ angular.module('drive.controllers', [])
               case "owner":
                 dataHeader.push('使用学校');
                 break;
+              case "contact":
+                dataHeader.push('联系方式');
+                break;
               case "registAddress":
                 dataHeader.push('注册地址');
                 break;
