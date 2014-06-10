@@ -59,8 +59,9 @@ angular.module('drive.directives', ['drive.controllers'])
           var searchParam = {
             "action": "search",
             "_index": "drive_test",
-            "_type": "devicestatus",
+            "_type": "deviceStatus",
             "source": {
+              "size": 10000,
               "query": {
                 "term": {"status": "login"}
               }
