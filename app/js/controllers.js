@@ -987,3 +987,48 @@ angular.module('drive.controllers', [])
       }
 
     }])
+    .controller('AttachmentChartCtrl', ['$rootScope', '$scope','DateService', function ($rootScope, $scope,DateService) {
+      $scope.data = {
+        series: ['所有文件播放次数','播放最多的文件','播放第2多的文件','播放第3多的文件'],
+        data : [{
+          x : DateService.getWeekDate(1),
+          y: [100,500, 0,200]
+        },
+        {
+          x : DateService.getWeekDate(2),
+          y: [300, 100, 100,500]
+        },
+        {
+          x : DateService.getWeekDate(3),
+          y: [351,500,200,600]
+        },
+        {
+          x : DateService.getWeekDate(4),
+          y: [545, 0, 879, 100]
+        },
+        {
+          x : DateService.getWeekDate(5),
+          y: [54, 0, 879, 100]
+        },
+        {
+          x : DateService.getWeekDate(6),
+          y: [54, 0, 879, 100]
+        },
+        {
+          x : DateService.getWeekDate(7),
+          y: [54, 0, 879, 100]
+        }]
+      }
+
+      $scope.chartType = 'line';
+
+      $scope.config = {
+        labels: false,
+        title : "文件播放统计图 第 " + DateService.getWeekNo() + " 周",
+        legend : {
+          display:true,
+          position:'right'
+        },
+        lineLegend: 'traditional'
+      };
+    }])
