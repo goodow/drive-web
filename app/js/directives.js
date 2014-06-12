@@ -49,8 +49,20 @@ angular.module('drive.directives', ['drive.controllers'])
     }])
     .directive('goodMap', ['Constant', 'bus', '$window', function (Constant, bus, $window) {
       function link(scope, element, attrs) {
+        /**
+         * google地图
+         */
         var map;
+        /**
+         * google地图标记数组
+         * @type {Array}
+         */
         var markersArray = [];
+        /**
+         * 当设备上线时显示的地图标记的自定义图标
+         * @type {string}
+         */
+        var image = 'img/markerIcon.png';
 
         /**
          * 获取在线的所有设备
@@ -120,6 +132,7 @@ angular.module('drive.directives', ['drive.controllers'])
           if (markersArray) {
             for (var i in markersArray) {
               if (markersArray[i].getTitle() == title) {
+                markersArray[i].setIcon(image);
                 return;
               }
             }
@@ -127,6 +140,7 @@ angular.module('drive.directives', ['drive.controllers'])
           var marker = new google.maps.Marker({
             position: new google.maps.LatLng(latitude, longitude),
             title: title,
+            icon: image,
             map: map
           });
           var infowindow = new google.maps.InfoWindow({
@@ -142,37 +156,40 @@ angular.module('drive.directives', ['drive.controllers'])
         }
 
         /**
-         * 设备下线后标记从地图上移除
+         * 设备下线后更改地图上标记的图标
          * @param latitude    经度
          * @param longitude   纬度
          * @param information 显示的信息
          * @param status      状态
          */
-        function removeMarker(title) {
+        function changeMarker(title) {
           if (markersArray) {
             for (var i in markersArray) {
 
               if (markersArray[i].getTitle() == title) {
-                markersArray[i].setMap(null);
-                markersArray.splice(i, 1);
+                markersArray[i].setIcon();
               }
             }
           }
-        }
+        };
 
-
+        /**
+         * 监听设备上线、下线
+         */
         scope.$watch('mapInfo', function (newValue, oldValue) {
           if (newValue !== oldValue && newValue !== "[]") {
             if (newValue.status == "login") {
               addMarker(newValue.coordinates[1], newValue.coordinates[0], newValue.deviceId, newValue.owner);
             } else if (newValue.status == "logout") {
-              removeMarker(newValue.deviceId);
+              changeMarker(newValue.deviceId);
             }
-
-
           }
         });
 
+
+        /**
+         * 获取所有的在线设备
+         */
         scope.$watch('mapInfos', function (newValue, oldValue) {
           if (newValue !== oldValue && newValue.length != 0) {
             for (var i in newValue) {
