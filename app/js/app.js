@@ -9,7 +9,8 @@ angular.module('drive', [
   'drive.services',
   'drive.directives',
   'drive.filters',
-  'ngCookies'])
+  'ngCookies',
+  'angularCharts'])
     .config(['$routeProvider', '$locationProvider', function ($routeProvider, $locationProvider) {
 //  $locationProvider.html5Mode(true).hashPrefix('');
 //      $locationProvider.html5Mode(true);
@@ -18,7 +19,8 @@ angular.module('drive', [
           .when('/datagrid/attachmentActivity', {templateUrl: 'partials/attachmentActivity.html', controller: 'AttachmentActivityCtrl'})
           .when('/datagrid/device', {templateUrl: 'partials/device.html', controller: 'DeviceCtrl'})
           .when('/datagrid/deviceActivity', {templateUrl: 'partials/deviceActivity.html', controller: 'DeviceActivityCtrl'})
-          .when('/datagrid/devicestatus', {templateUrl: 'partials/data-map.html'});
+          .when('/datagrid/devicestatus', {templateUrl: 'partials/data-map.html'})
+          .when('/chart/attachmentChart', {templateUrl: 'partials/chart.html', controller: 'AttachmentChartCtrl'});
     }])
 //
     .run(['$templateCache', '$location', '$cookieStore', '$cookies', 'Constant', function ($templateCache, $location, $cookieStore, $cookies, Constant) {

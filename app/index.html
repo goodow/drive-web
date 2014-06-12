@@ -30,7 +30,7 @@
     <div  class="row">
       <div class="col-md-3" ng-controller="MenuCtrl">
           <div class="list-group" >
-            <a href="#/datagrid/{{menu.type}}" ng-click="setMenu($index)" class="list-group-item {{menu.className_}}"  ng-repeat="menu in menuList" ng-cloak>{{menu.name}}</a>
+            <a href="#{{menu.type}}" ng-click="setMenu($index)" class="list-group-item {{menu.className_}}"  ng-repeat="menu in menuList" ng-cloak>{{menu.name}}</a>
           </div>
       </div>
       <div class="col-md-9">
@@ -62,6 +62,6 @@
   <script src="js/controllers.js"></script>
   <script src="js/filters.js"></script>
   <script src="js/directives.js"></script>
-
+  <script src="js/angular-charts.js"></script>
 </body>
 </html>

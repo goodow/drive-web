@@ -14,8 +14,8 @@ angular.module('drive.services', [])
       }
   }])
   .factory('HeadData', function(){
-      var DashBoard = [{"type": 'attachmentBoard', "name": '文档统计'},{"type": 'deviceBoard', "name": '设备统计'}];
-      var SystemManage = [{"type": 'attachment', "name": '文档播放统计'},{"type": 'attachmentActivity', "name": '文档操作管理'},{"type": 'device', "name": '设备管理'},{"type": 'deviceActivity', "name": '设备操作管理'},{"type": 'devicestatus', "name": '设备在线显示'}];
+      var DashBoard = [{"type": '/chart/attachmentChart', "name": '文档统计'},{"type": '/chart/deviceChart', "name": '设备统计'}];
+      var SystemManage = [{"type": '/datagrid/attachment', "name": '文档播放统计'},{"type": '/datagrid/attachmentActivity', "name": '文档操作管理'},{"type": '/datagrid/device', "name": '设备管理'},{"type": '/datagrid/deviceActivity', "name": '设备操作管理'},{"type": '/datagrid/devicestatus', "name": '设备在线显示'}];
       var UserManage = [{"type": 'user1', "name": '用户管理1'},{"type": 'user2', "name": '用户管理2'}];
       var ProfileManage = [{"type": 'profile1', "name": '个人中心1'},{"type": 'profile2', "name": '个人中心2'}];
       var li1 = {"menu": DashBoard, "name": '统计报表', "className_":'active'};
@@ -283,3 +283,169 @@ angular.module('drive.services', [])
         }
       }
     }])
+    .factory('DateService',function(){
+      var now = new Date(); //当前日期
+      var nowDayOfWeek = now.getDay(); //今天本周的第几天
+      var nowDay = now.getDate(); //当前日
+      var nowMonth = now.getMonth(); //当前月
+      var nowYear = now.getYear(); //当前年
+      nowYear += (nowYear < 2000) ? 1900 : 0; //
+
+      var lastMonthDate = new Date(); //上月日期
+      lastMonthDate.setDate(1);
+      lastMonthDate.setMonth(lastMonthDate.getMonth()-1);
+      var lastYear = lastMonthDate.getYear();
+      var lastMonth = lastMonthDate.getMonth();
+      //格局化日期：yyyy-MM-dd
+      var formatDate = function(date) {
+        var myyear = date.getFullYear();
+        var mymonth = date.getMonth()+1;
+        var myweekday = date.getDate();
+
+        if(mymonth < 10){
+          mymonth = "0" + mymonth;
+        }
+        if(myweekday < 10){
+          myweekday = "0" + myweekday;
+        }
+        return (mymonth + "." + myweekday);
+      }
+
+      return {
+        //获取当前第几周
+        getWeekNo: function getWeekNo() {
+          var totalDays = 0;
+          var now = new Date();
+          var years=now.getYear();
+          if (years < 1000)years+=1900;
+          var days = new Array(12);	// Array to hold the total days in a month
+          days[0] = 31;
+          days[2] = 31;
+          days[3] = 30;
+          days[4] = 31;
+          days[5] = 30;
+          days[6] = 31;
+          days[7] = 31;
+          days[8] = 30;
+          days[9] = 31;
+          days[10] = 30;
+          days[11] = 31;
+          //  Check to see if this is a leap year
+          if (Math.round(now.getYear()/4) == now.getYear()/4) {
+            days[1] = 29
+          }else {
+            days[1] = 28
+          }
+          //  If this is January no need for any fancy calculation otherwise figure out the
+          //  total number of days to date and then determine what week
+          if (now.getMonth() == 0) {
+            totalDays = totalDays + now.getDate();
+          }else{
+            var curMonth = now.getMonth();
+            for (var count = 1; count <= curMonth; count++) {
+              totalDays = totalDays + days[count - 1];
+            }
+            totalDays = totalDays + now.getDate();
+          }
+          var week = Math.round(totalDays/7);
+          return week;
+        },
+
+        //格局化日期：yyyy-MM-dd
+        formatDate:function formatDate(date) {
+          var myyear = date.getFullYear();
+          var mymonth = date.getMonth()+1;
+          var myweekday = date.getDate();
+
+          if(mymonth < 10){
+            mymonth = "0" + mymonth;
+          }
+          if(myweekday < 10){
+            myweekday = "0" + myweekday;
+          }
+          return (mymonth + "." + myweekday);
+        },
+
+        //获得某月的天数
+        getMonthDays:function getMonthDays(myMonth){
+          var monthStartDate = new Date(nowYear, myMonth, 1);
+          var monthEndDate = new Date(nowYear, myMonth + 1, 1);
+          var days = (monthEndDate - monthStartDate)/(1000 * 60 * 60 * 24);
+          return days;
+        },
+
+        //获得本季度的开端月份
+        getQuarterStartMonth:function getQuarterStartMonth(){
+          var quarterStartMonth = 0;
+          if(nowMonth<3){
+            quarterStartMonth = 0;
+          }
+          if(2<nowMonth && nowMonth<6){
+            quarterStartMonth = 3;
+          }
+          if(5<nowMonth && nowMonth<9){
+            quarterStartMonth = 6;
+          }
+          if(nowMonth>8){
+            quarterStartMonth = 9;
+          }
+          return quarterStartMonth;
+        },
+
+        //获得本周的开端日期
+        getWeekStartDate:function getWeekStartDate() {
+          var curr = new Date;
+          return formatDate(new Date(curr.setDate(curr.getDate() - curr.getDay()+1)));
+        },
+
+        //获得本周的停止日期
+        getWeekEndDate:function getWeekEndDate() {
+          var curr = new Date;
+          return formatDate(new Date(curr.setDate(curr.getDate() - curr.getDay()+7)));;
+        },
+
+        //获取第几周日期
+        getWeekDate:function getWeekDate(day) {
+          var curr = new Date;
+          return formatDate(new Date(curr.setDate(curr.getDate() - curr.getDay()+day)));;
+        },
+
+        //获得本月的开端日期
+        getMonthStartDate:function getMonthStartDate(){
+          var monthStartDate = new Date(nowYear, nowMonth, 1);
+          return formatDate(monthStartDate);
+        },
+
+        //获得本月的停止日期
+        getMonthEndDate:function getMonthEndDate(){
+          var monthEndDate = new Date(nowYear, nowMonth, getMonthDays(nowMonth));
+          return formatDate(monthEndDate);
+        },
+
+        //获得上月开端时候
+        getLastMonthStartDate:function getLastMonthStartDate(){
+          var lastMonthStartDate = new Date(nowYear, lastMonth, 1);
+          return formatDate(lastMonthStartDate);
+        },
+
+        //获得上月停止时候
+        getLastMonthEndDate:function getLastMonthEndDate(){
+          var lastMonthEndDate = new Date(nowYear, lastMonth, getMonthDays(lastMonth));
+          return formatDate(lastMonthEndDate);
+        },
+
+        //获得本季度的开端日期
+        getQuarterStartDate:function getQuarterStartDate(){
+
+          var quarterStartDate = new Date(nowYear, getQuarterStartMonth(), 1);
+          return formatDate(quarterStartDate);
+        },
+
+        //或的本季度的停止日期
+        getQuarterEndDate:function getQuarterEndDate(){
+          var quarterEndMonth = getQuarterStartMonth() + 2;
+          var quarterStartDate = new Date(nowYear, quarterEndMonth, getMonthDays(quarterEndMonth));
+          return formatDate(quarterStartDate);
+        }
+      };
+    })
