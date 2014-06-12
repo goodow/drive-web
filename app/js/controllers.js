@@ -785,7 +785,11 @@ angular.module('drive.controllers', [])
             dataTr.push(datas[i]._id);
             for (var p in datas[i]._source) {
               if(p == "contentLength" || p == "url" || p == "thumbnail" || p =="tags")break;
-              dataTr.push(datas[i]._source[p]);
+              if(p == "contentType"){
+                dataTr.push(datas[i]._source[p].split("/")[datas[i]._source[p].split("/").length-1])
+              }else{
+                dataTr.push(datas[i]._source[p]);
+              }
             }
             dataBody.push(dataTr);
             getOpenDeviceByFile(i,datas[i]._id);
