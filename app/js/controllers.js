@@ -718,6 +718,7 @@ angular.module('drive.controllers', [])
       $scope.deviceData = []; //播放设备详情
       $scope.openCount = []; //播放次数
       $scope.openTime = []; //播放时长
+      $scope.attachmentType = []; //文件类型
       $scope.title = '文档播放统计哦';
       var searchParam = {
         "action":'search',
@@ -775,9 +776,6 @@ angular.module('drive.controllers', [])
               case "title":
                 dataHeader.push("文档标题");
                 break;
-              case "contentType":
-                dataHeader.push('文档类型');
-                break;
             }
           }
 
@@ -786,7 +784,7 @@ angular.module('drive.controllers', [])
             for (var p in datas[i]._source) {
               if(p == "contentLength" || p == "url" || p == "thumbnail" || p =="tags")break;
               if(p == "contentType"){
-                dataTr.push(datas[i]._source[p].split("/")[datas[i]._source[p].split("/").length-1])
+                $scope.attachmentType[i] = datas[i]._source[p].split("/")[datas[i]._source[p].split("/").length-1];
               }else{
                 dataTr.push(datas[i]._source[p]);
               }
