@@ -21,7 +21,7 @@
                 <th class="col-md-1">{{deviceOpen[$index]}}</th>
                 <th class="col-md-1">{{openCount[$index]}}</th>
                 <th class="col-md-1"><img class="fileicon" title="{{attachmentType[$index]}}" ng-src='img/fileicons/{{attachmentType[$index]}}.png'/></th>
-                <th class="col-md-1"><button class="btn btn-default" ng-click="detailClick($index);">查看</button></th>
+                <th class="col-md-1"><button class="btn btn-default" ng-click="open($index)">查看</button></th>
             </tr></tbody>
         </table>
     </div>
@@ -31,3 +31,27 @@
         <button class="btn btn-default" style="margin-left: 5px" ng-click="nextPage($event)">Next</button>
     </div>
 </div>
+<script type="text/ng-template" id="myModalContent.html">
+    <div class="modal-header">
+        <h3 class="modal-title">文件播放详情</h3>
+    </div>
+    <div class="modal-body">
+        <table style="margin-bottom:0px" class="table table-striped">
+            <thead>
+            <tr>
+                <th>设备MAC</th>
+                <th>播放次数</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr ng-repeat="item in items">
+                <td>{{item.term}}</td>
+                <td>{{item.count}}</td>
+            </tr>
+            </tbody>
+        </table>
+    </div>
+    <div style="margin-top:0px" class="modal-footer">
+        <button class="btn btn-primary" ng-click="cancel()">关闭</button>
+    </div>
+</script>

@@ -8,7 +8,7 @@ angular.module('drive.services', [])
   .factory('bus', ['$window','Constant',function($window,Constant){
       var  options = {debug:true, forkLocal:true};
       var serverUrl = Constant.serverUrl;
-      var bus = new realtime.channel.ReconnectBus(serverUrl, options);
+      var bus = new $window.realtime.channel.ReconnectBus(serverUrl, options);
       return function(){
           return bus;
       }

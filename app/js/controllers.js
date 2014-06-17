@@ -708,7 +708,7 @@ angular.module('drive.controllers', [])
         });
       }
     }])
-    .controller('AttachmentCtrl', ['$scope', 'bus', 'Constant', 'PaginationService', 'millionFormat', '$log', 'messageService', function ($scope, bus, Constant, PaginationService, millionFormat, $log, messageService) {
+    .controller('AttachmentCtrl',['$scope','$modal','bus','Constant','PaginationService','millionFormat','$log','messageService',function($scope,$modal,bus,Constant,PaginationService,millionFormat,$log,messageService){
       var currentPage = 1;
       var size = 5;
       var index = 'drive_test';
@@ -988,6 +988,26 @@ angular.module('drive.controllers', [])
         messageService.toast(toastStr);
       }
 
+      //查看详情
+      var ModalInstanceCtrl = function ($scope, $modalInstance, items) {
+        $scope.items = items;
+        $scope.cancel = function () {
+          $modalInstance.dismiss('cancel');
+        };
+      };
+
+      $scope.open = function (btnIndex) {
+        var modalInstance = $modal.open({
+          templateUrl: 'myModalContent.html',
+          controller: ModalInstanceCtrl,
+          size: "lg",
+          resolve: {
+            items: function () {
+              return $scope.deviceData[btnIndex];
+            }
+          }
+        });
+      };
     }])
     .controller('AttachmentChartCtrl', ['$rootScope', '$scope', 'bus', 'Constant', 'DateService', function ($rootScope, $scope, bus, Constant, DateService) {
       var index = "drive_test";

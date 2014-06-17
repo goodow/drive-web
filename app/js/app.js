@@ -10,7 +10,8 @@ angular.module('drive', [
   'drive.directives',
   'drive.filters',
   'ngCookies',
-  'angularCharts'])
+  'angularCharts',
+  'ui.bootstrap'])
     .config(['$routeProvider', '$locationProvider', function ($routeProvider, $locationProvider) {
 //  $locationProvider.html5Mode(true).hashPrefix('');
 //      $locationProvider.html5Mode(true);
