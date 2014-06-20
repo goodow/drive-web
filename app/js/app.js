@@ -21,7 +21,8 @@ angular.module('drive', [
           .when('/datagrid/deviceActivity', {templateUrl: 'partials/deviceActivity.html', controller: 'DeviceActivityCtrl'})
           .when('/datagrid/devicestatus', {templateUrl: 'partials/data-map.html'})
           .when('/chart/attachmentChart', {templateUrl: 'partials/chart.html', controller: 'AttachmentChartCtrl'})
-          .when('/chart/deviceChart', {templateUrl: 'partials/chart.html', controller: 'DeviceChartCtrl'});
+          .when('/chart/deviceChart', {templateUrl: 'partials/chart.html', controller: 'DeviceChartCtrl'})
+          .when('/datagrid/userInfo', {templateUrl: 'partials/userInfo.html', controller: 'userAddCtrl'});
     }])
 //
     .run(['$templateCache', '$location', '$cookieStore', '$cookies', 'Constant', function ($templateCache, $location, $cookieStore, $cookies, Constant) {

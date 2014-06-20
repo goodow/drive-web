@@ -96,7 +96,7 @@ angular.module('drive.directives', ['drive.controllers'])
         /**
          * 监听drive.devicestatus频道
          */
-        bus().registerHandler("drive.devicestatus", function (registerMessage) {
+        bus().registerHandler("drive/devicestatus", function (registerMessage) {
           scope.$apply(function () {
             scope.mapInfo = registerMessage.body();
           });

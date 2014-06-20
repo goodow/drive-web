@@ -16,7 +16,7 @@ angular.module('drive.services', [])
   .factory('HeadData', function(){
       var DashBoard = [{"type": '/chart/attachmentChart', "name": '文档统计'},{"type": '/chart/deviceChart', "name": '设备统计'}];
       var SystemManage = [{"type": '/datagrid/attachment', "name": '文档播放统计'},{"type": '/datagrid/attachmentActivity', "name": '文档操作管理'},{"type": '/datagrid/device', "name": '设备管理'},{"type": '/datagrid/deviceActivity', "name": '设备操作管理'},{"type": '/datagrid/devicestatus', "name": '设备在线显示'}];
-      var UserManage = [{"type": 'user1', "name": '用户管理1'},{"type": 'user2', "name": '用户管理2'}];
+      var UserManage = [{"type": '/datagrid/userInfo', "name": '添加用户'},{"type": '/datagrid/userList', "name": '查看用户'}];
       var ProfileManage = [{"type": 'profile1', "name": '个人中心1'},{"type": 'profile2', "name": '个人中心2'}];
       var li1 = {"menu": DashBoard, "name": '统计报表', "className_":'active'};
       var li2 = {"menu": SystemManage, "name": '系统管理', "className_":''};

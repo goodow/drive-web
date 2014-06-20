@@ -4,7 +4,7 @@
 
 
 angular.module('drive.controllers', [])
-    .controller('HeadCtrl', ['$rootScope', '$scope','HeadData', function ($rootScope, $scope, HeadData) {
+    .controller('HeadCtrl', ['$rootScope', '$scope', 'HeadData', function ($rootScope, $scope, HeadData) {
       $scope.headList = HeadData;
       $scope.setHead = function (index) {
         HeadData.forEach(function (item) {
@@ -17,9 +17,9 @@ angular.module('drive.controllers', [])
     .controller('MenuCtrl', ['$rootScope', '$scope', 'HeadData', function ($rootScope, $scope, HeadData) {
       $scope.headList = HeadData;
       //监听service的变化
-      $scope.$watch('headList', function(newVal, oldVal) {
+      $scope.$watch('headList', function (newVal, oldVal) {
         HeadData.forEach(function (item) {
-          if(item.className_ == 'active'){
+          if (item.className_ == 'active') {
             $scope.menuList = item.menu;
           }
         });
@@ -220,11 +220,11 @@ angular.module('drive.controllers', [])
           };
         } else {
           searchParam = {
-            "action":'search',
-            '_index':index,
-            '_type':type,
-            source:{
-              sort:[
+            "action": 'search',
+            '_index': index,
+            '_type': type,
+            source: {
+              sort: [
 //                {'open':"desc"},
                 '_uid'
               ],
@@ -257,11 +257,11 @@ angular.module('drive.controllers', [])
 
       var getQueryString = function (keyword) {
         var queryString = {match_all: {}};
-        if(keyword != '' || keyword.length != 0){
-          queryString =  {
-            "multi_match" : {
-              "query" : '"'+keyword+'"',
-              "fields" : ["deviceId","address", "user^2"]
+        if (keyword != '' || keyword.length != 0) {
+          queryString = {
+            "multi_match": {
+              "query": '"' + keyword + '"',
+              "fields": ["deviceId", "address", "user^2"]
             }
           }
         }
@@ -333,9 +333,9 @@ angular.module('drive.controllers', [])
         });
       };
       $log.log(JSON.stringify(searchParam));
-      bus().send(Constant.search_channel,searchParam,callback);
-      $scope.prePage = function(){
-        if(currentPage <= 1){
+      bus().send(Constant.search_channel, searchParam, callback);
+      $scope.prePage = function () {
+        if (currentPage <= 1) {
           currentPage = 1;
         }
         if (currentPage == 1) {
@@ -428,11 +428,11 @@ angular.module('drive.controllers', [])
           };
         } else {
           searchParam = {
-            "action":'search',
-            '_index':index,
-            '_type':type,
-            source:{
-              sort:[
+            "action": 'search',
+            '_index': index,
+            '_type': type,
+            source: {
+              sort: [
 //                {"open":"desc"},
                 "_uid"
               ],
@@ -450,8 +450,8 @@ angular.module('drive.controllers', [])
       var index = 'drive_test';
       var type = 'device';
       var flag = true; //true向下翻，
-      $scope.loadingStatus = new Array(new Array(),new Array());
-      $scope.btnStatus = new Array(new Array(),new Array());
+      $scope.loadingStatus = new Array(new Array(), new Array());
+      $scope.btnStatus = new Array(new Array(), new Array());
       $scope.btnText = []; //操作按钮文字
       $scope.statusText = []; //设备状态
       $scope.title = '设备管理';
@@ -469,18 +469,18 @@ angular.module('drive.controllers', [])
 
       var getQueryString = function (keyword) {
         var queryString = {match_all: {}};
-        if(keyword != '' || keyword.length != 0){
-          queryString =  {
-            "multi_match" : {
-              "query" : '"'+keyword+'"',
-              "fields" : [ "owner^2", "registAddress"]
+        if (keyword != '' || keyword.length != 0) {
+          queryString = {
+            "multi_match": {
+              "query": '"' + keyword + '"',
+              "fields": [ "owner^2", "registAddress"]
             }
           }
         }
         return queryString;
       };
 
-      var callback = function(message){
+      var callback = function (message) {
 
         var datas = message.body().hits.hits;
         if (!datas || datas.length == 0) {
@@ -512,7 +512,7 @@ angular.module('drive.controllers', [])
           var dataBody = [];
           var dataTr = [];
           for (var p in datas[0]._source) {
-            switch (p){
+            switch (p) {
               case "code":
                 dataHeader.push("设备编码");
                 break;
@@ -530,19 +530,19 @@ angular.module('drive.controllers', [])
           for (var i = 0; i < datas.length; i++) {
             dataTr.push(datas[i]._id);
             for (var p in datas[i]._source) {
-              if(p == "reset" || p == "lock" || p == "registCoordinates" || p =="radius")break;
+              if (p == "reset" || p == "lock" || p == "registCoordinates" || p == "radius")break;
               dataTr.push(datas[i]._source[p]);
             }
             dataBody.push(dataTr);
             dataTr = [];
-            if(datas[i]._source.reset == 1){
+            if (datas[i]._source.reset == 1) {
               $scope.btnText[i] = '取消';
-            }else{
+            } else {
               $scope.btnText[i] = '重置';
             }
-            if(datas[i]._source.lock == 0){
+            if (datas[i]._source.lock == 0) {
               $scope.statusText[i] = '锁定';
-            }else{
+            } else {
               $scope.statusText[i] = '解锁';
             }
             $scope.loadingStatus[i] = new Array();
@@ -654,11 +654,11 @@ angular.module('drive.controllers', [])
           };
         } else {
           searchParam = {
-            "action":'search',
-            '_index':index,
-            '_type':type,
-            source:{
-              sort:[
+            "action": 'search',
+            '_index': index,
+            '_type': type,
+            source: {
+              sort: [
                 "_uid"
               ],
               'size': size
@@ -669,7 +669,7 @@ angular.module('drive.controllers', [])
         bus().send(Constant.search_channel, searchParam, callback);
       }
 
-      $scope.resetClick = function(id,btnIndex,btnPara){
+      $scope.resetClick = function (id, btnIndex, btnPara) {
         $scope.loadingStatus[btnIndex][btnPara] = !$scope.loadingStatus[btnIndex][btnPara];
         $scope.btnStatus[btnIndex][btnPara] = !$scope.btnStatus[btnIndex][btnPara];
         var getInfo = {
@@ -678,11 +678,11 @@ angular.module('drive.controllers', [])
           _type: type,
           _id: id
         }
-        bus().send(Constant.search_channel, getInfo, function(message){
-          if(btnPara == 0){
-            message.body()._source.lock = $scope.statusText[btnIndex] == '锁定'?1:0;
-          }else{
-            message.body()._source.reset = $scope.btnText[btnIndex] == '重置'?1:0;
+        bus().send(Constant.search_channel, getInfo, function (message) {
+          if (btnPara == 0) {
+            message.body()._source.lock = $scope.statusText[btnIndex] == '锁定' ? 1 : 0;
+          } else {
+            message.body()._source.reset = $scope.btnText[btnIndex] == '重置' ? 1 : 0;
           }
 
           var updateDevice = {
@@ -693,22 +693,22 @@ angular.module('drive.controllers', [])
             source: message.body()._source
           }
           console.log(updateDevice);
-          bus().send(Constant.search_channel, updateDevice, function(message){
+          bus().send(Constant.search_channel, updateDevice, function (message) {
             console.log(message.body());
-            $scope.$apply(function(){
+            $scope.$apply(function () {
               $scope.loadingStatus[btnIndex][btnPara] = !$scope.loadingStatus[btnIndex][btnPara];
               $scope.btnStatus[btnIndex][btnPara] = !$scope.btnStatus[btnIndex][btnPara];
-              if(btnPara == 0){
-                $scope.statusText[btnIndex] = $scope.statusText[btnIndex] == '锁定'?'解锁':'锁定';
-              }else{
-                $scope.btnText[btnIndex] = $scope.btnText[btnIndex] == '重置'?'取消':'重置';
+              if (btnPara == 0) {
+                $scope.statusText[btnIndex] = $scope.statusText[btnIndex] == '锁定' ? '解锁' : '锁定';
+              } else {
+                $scope.btnText[btnIndex] = $scope.btnText[btnIndex] == '重置' ? '取消' : '重置';
               }
             });
           });
         });
       }
     }])
-    .controller('AttachmentCtrl',['$scope','bus','Constant','PaginationService','millionFormat','$log','messageService',function($scope,bus,Constant,PaginationService,millionFormat,$log,messageService){
+    .controller('AttachmentCtrl', ['$scope', 'bus', 'Constant', 'PaginationService', 'millionFormat', '$log', 'messageService', function ($scope, bus, Constant, PaginationService, millionFormat, $log, messageService) {
       var currentPage = 1;
       var size = 5;
       var index = 'drive_test';
@@ -721,41 +721,41 @@ angular.module('drive.controllers', [])
       $scope.attachmentType = []; //文件类型
       $scope.title = '文档播放统计哦';
       var searchParam = {
-        "action":'search',
-        '_index':index,
-        '_type':type,
-        source:{
-          sort:[
+        "action": 'search',
+        '_index': index,
+        '_type': type,
+        source: {
+          sort: [
             '_uid'
           ],
-          'size':size
+          'size': size
         }
       };
 
-      var getQueryString = function(keyword){
+      var getQueryString = function (keyword) {
         var queryString = {match_all: {}};
-        if(keyword != '' || keyword.length != 0){
-          queryString =  {
-            "multi_match" : {
-              "query" : '"'+keyword+'"',
-              "fields" : [ "title^2", "tags"]
+        if (keyword != '' || keyword.length != 0) {
+          queryString = {
+            "multi_match": {
+              "query": '"' + keyword + '"',
+              "fields": [ "title^2", "tags"]
             }
           }
         }
         return queryString;
       };
 
-      var callback = function(message){
+      var callback = function (message) {
         var datas = message.body().hits.hits;
-        if(!datas||datas.length == 0){
+        if (!datas || datas.length == 0) {
           messageService.toast('查询不到新数据哦！');
           --currentPage;
           return;
         }
 
-        $scope.$apply(function(){
+        $scope.$apply(function () {
           $scope.datas = datas;
-          if(!flag&&!$scope.search_tx){
+          if (!flag && !$scope.search_tx) {
             datas.reverse();
           }
           var tableInfo = show(datas);
@@ -772,7 +772,7 @@ angular.module('drive.controllers', [])
           var dataBody = [];
           var dataTr = [];
           for (var p in datas[0]._source) {
-            switch (p){
+            switch (p) {
               case "title":
                 dataHeader.push("文档标题");
                 break;
@@ -782,15 +782,15 @@ angular.module('drive.controllers', [])
           for (var i = 0; i < datas.length; i++) {
             dataTr.push(datas[i]._id);
             for (var p in datas[i]._source) {
-              if(p == "contentLength" || p == "url" || p == "thumbnail" || p =="tags")break;
-              if(p == "contentType"){
-                $scope.attachmentType[i] = datas[i]._source[p].split("/")[datas[i]._source[p].split("/").length-1];
-              }else{
+              if (p == "contentLength" || p == "url" || p == "thumbnail" || p == "tags")break;
+              if (p == "contentType") {
+                dataTr.push(datas[i]._source[p].split("/")[datas[i]._source[p].split("/").length - 1])
+              } else {
                 dataTr.push(datas[i]._source[p]);
               }
             }
             dataBody.push(dataTr);
-            getOpenDeviceByFile(i,datas[i]._id);
+            getOpenDeviceByFile(i, datas[i]._id);
             dataTr = [];
           }
           return {
@@ -800,107 +800,107 @@ angular.module('drive.controllers', [])
         }
       }
 
-      bus().send(Constant.search_channel,searchParam,callback);
-      $scope.prePage = function(){
-        if(currentPage <= 1){
+      bus().send(Constant.search_channel, searchParam, callback);
+      $scope.prePage = function () {
+        if (currentPage <= 1) {
           currentPage = 1;
         }
-        if(currentPage == 1){
+        if (currentPage == 1) {
           messageService.toast('已经是第一页了哦！');
           return;
         }
-        if(currentPage != 1){
+        if (currentPage != 1) {
           currentPage--;
         }
         flag = false;
 
-        var getFirstItem = function(items){
-          if(!items||!angular.isArray(items)||items.length == 0){
+        var getFirstItem = function (items) {
+          if (!items || !angular.isArray(items) || items.length == 0) {
             return null;
           }
           return items[0];
         }
         //$scope.datas array clone
-        var datas = angular.extend([],$scope.datas);
+        var datas = angular.extend([], $scope.datas);
         var first = getFirstItem(datas);
-        if(first) {
-          var querydsl = PaginationService.buildQuery({'_uid':type+'#'+first._id},null,5,false);
-          if($scope.search_tx){
+        if (first) {
+          var querydsl = PaginationService.buildQuery({'_uid': type + '#' + first._id}, null, 5, false);
+          if ($scope.search_tx) {
             querydsl = {
-              query:getQueryString($scope.search_tx),
-              from:  (currentPage - 1) * 5,
+              query: getQueryString($scope.search_tx),
+              from: (currentPage - 1) * 5,
               size: 5
             };
-          }else{
+          } else {
             querydsl.sort.pop();
-            querydsl.sort.push({'_uid':'desc'})
+            querydsl.sort.push({'_uid': 'desc'})
           }
           searchParam.source = querydsl;
           $log.log(JSON.stringify(searchParam));
           bus().send(Constant.search_channel, searchParam, callback);
         }
       }
-      $scope.nextPage = function(){
-        if(currentPage <= 1){
+      $scope.nextPage = function () {
+        if (currentPage <= 1) {
           currentPage = 1;
         }
         flag = true;
-        var getLastItem = function(items){
-          if(!items||!angular.isArray(items)||items.length == 0){
+        var getLastItem = function (items) {
+          if (!items || !angular.isArray(items) || items.length == 0) {
             return null;
           }
-          return items[size-1];
+          return items[size - 1];
         }
         //$scope.datas array clone
-        var datas = angular.extend([],$scope.datas)
-        if(datas.length < size){
+        var datas = angular.extend([], $scope.datas)
+        if (datas.length < size) {
           messageService.toast('没有更多数据了哦！');
           return;
         }
 
         currentPage++;
         var last = getLastItem(datas);
-        if(last){
-          var querydsl = PaginationService.buildQuery({'_uid':type+'#'+last._id},null,5,true);
-          if($scope.search_tx){
+        if (last) {
+          var querydsl = PaginationService.buildQuery({'_uid': type + '#' + last._id}, null, 5, true);
+          if ($scope.search_tx) {
             querydsl = {
-              query:getQueryString($scope.search_tx),
+              query: getQueryString($scope.search_tx),
               from: (currentPage - 1) * 5,
               size: 5
             };
           }
           searchParam.source = querydsl;
           $log.log(JSON.stringify(searchParam));
-          bus().send(Constant.search_channel,searchParam,callback);
+          bus().send(Constant.search_channel, searchParam, callback);
 
         }
       }
-      $scope.searchClick = function(){
+      $scope.searchClick = function () {
         flag = true;
         currentPage = 1;
-        if($scope.search_tx){
+        if ($scope.search_tx) {
           searchParam = {
             action: 'search',
             _index: index,
             _type: type,
             source: {
-              query:getQueryString($scope.search_tx),
+              query: getQueryString($scope.search_tx),
               from: 0,
               size: 5
             },
             search_type: 'query_then_fetch',
             scroll: '5m'
           };
-        }else{
+        } else {
           searchParam = {
-            "action":'search',
-            '_index':index,
-            '_type':type,
-            source:{
-              sort:[
+            "action": 'search',
+            '_index': index,
+            '_type': type,
+            source: {
+              sort: [
                 "_uid"
               ],
-              'size':size
+              'size': size
             }
           };
         }
@@ -909,7 +909,7 @@ angular.module('drive.controllers', [])
       }
 
       //某个设备上，某个文件播放次数
-      var getDeviceOpenCount = function(userId, attachmentId){
+      var getDeviceOpenCount = function (userId, attachmentId) {
         var source = {
           "query": {
             "bool": {
@@ -927,51 +927,51 @@ angular.module('drive.controllers', [])
               ]
             }
           },
-          "from":0,
-          "size":0
+          "from": 0,
+          "size": 0
         };
         var getDeviceOpen = {
-          "action":'search',
-          '_index':index,
-          '_type':"attachmentActivity",
-          source:source
+          "action": 'search',
+          '_index': index,
+          '_type': "attachmentActivity",
+          source: source
         };
-        bus().send(Constant.search_channel, getDeviceOpen, function(message){
-          $scope.$apply(function(){
+        bus().send(Constant.search_channel, getDeviceOpen, function (message) {
+          $scope.$apply(function () {
             $scope.deviceOpen.push(message.body().hits.total);
           });
         });
       }
 
       //根据文件获取播放过的设备
-      var getOpenDeviceByFile = function(lineNo,attachmentId) {
+      var getOpenDeviceByFile = function (lineNo, attachmentId) {
         var source = {
-          "size" : 0,
-          "query" : {
-            "term" : { "attachmentId" : attachmentId }
+          "size": 0,
+          "query": {
+            "term": { "attachmentId": attachmentId }
           },
-          "facets" : {
-            "tag" : {
-              "terms" : {
-                "fields" : ["userId"],
-                "size" :100000000
+          "facets": {
+            "tag": {
+              "terms": {
+                "fields": ["userId"],
+                "size": 100000000
               }
             }
           }
         }
         var getDevices = {
-          "action":'search',
-          '_index':index,
-          '_type':"attachmentActivity",
-          source:source
+          "action": 'search',
+          '_index': index,
+          '_type': "attachmentActivity",
+          source: source
         };
-        bus().send(Constant.search_channel, getDevices, function(message){
+        bus().send(Constant.search_channel, getDevices, function (message) {
           var Data = message.body().facets.tag.terms;
           var openCount = 0;
-          for(var i = 0; i < Data.length; i++){
-            openCount = openCount+Data[i].count;
+          for (var i = 0; i < Data.length; i++) {
+            openCount = openCount + Data[i].count;
           }
-          $scope.$apply(function(){
+          $scope.$apply(function () {
             $scope.deviceData[lineNo] = Data;
             $scope.deviceOpen[lineNo] = Data.length;
             $scope.openCount[lineNo] = openCount;
@@ -979,32 +979,32 @@ angular.module('drive.controllers', [])
         });
       }
 
-      $scope.detailClick = function(btnIndex){
+      $scope.detailClick = function (btnIndex) {
         var toastStr = "";
         var data = $scope.deviceData[btnIndex];
-        for(var o in data){
-          toastStr = toastStr+"设备号:"+data[o].term+"  播放数:"+data[o].count +"</br>";
+        for (var o in data) {
+          toastStr = toastStr + "设备号:" + data[o].term + "  播放数:" + data[o].count + "</br>";
         }
         messageService.toast(toastStr);
       }
 
     }])
-    .controller('AttachmentChartCtrl', ['$rootScope', '$scope','bus','Constant','DateService', function ($rootScope, $scope,bus,Constant,DateService) {
+    .controller('AttachmentChartCtrl', ['$rootScope', '$scope', 'bus', 'Constant', 'DateService', function ($rootScope, $scope, bus, Constant, DateService) {
       var index = "drive_test";
       $scope.data = {
         series: ['所有文件播放次数'],
-        data : []
+        data: []
       }
 
-      var getData = function(dateIndex){
+      var getData = function (dateIndex) {
         var date = DateService.getWeekDate(dateIndex);
         var source = {
           "size": 0,
           "query": {
-            "range" : {
-              "open" : {
-                "gte" : date,
-                "lte" : date
+            "range": {
+              "open": {
+                "gte": date,
+                "lte": date
               }
             }
           },
@@ -1020,24 +1020,24 @@ angular.module('drive.controllers', [])
           }
         };
         var getAttachmentActivity = {
-          "action":'search',
-          '_index':index,
-          '_type':"attachmentActivity",
-          source:source
+          "action": 'search',
+          '_index': index,
+          '_type': "attachmentActivity",
+          source: source
         };
-        bus().send(Constant.search_channel, getAttachmentActivity, function(message){
+        bus().send(Constant.search_channel, getAttachmentActivity, function (message) {
           var totalCount = message.body().hits.total;
           var otherCount = message.body().facets.tag.terms;
-          $scope.$apply(function(){
-            $scope.data.data[dateIndex-1] = {
-              x : DateService.getFormatDate(new Date(date)),
+          $scope.$apply(function () {
+            $scope.data.data[dateIndex - 1] = {
+              x: DateService.getFormatDate(new Date(date)),
               y: [totalCount]
             };
           });
         });
       }
 
-      for(var n = 1; n < 8; n++){
+      for (var n = 1; n < 8; n++) {
         getData(n);
       }
 
@@ -1045,10 +1045,10 @@ angular.module('drive.controllers', [])
 
       $scope.config = {
         labels: false,
-        title : "文件播放统计图 第 " + DateService.getWeekNo() + " 周",
-        legend : {
-          display:true,
-          position:'right'
+        title: "文件播放统计图 第 " + DateService.getWeekNo() + " 周",
+        legend: {
+          display: true,
+          position: 'right'
         },
         lineLegend: 'traditional'
       };
@@ -1119,3 +1119,13 @@ angular.module('drive.controllers', [])
         lineLegend: 'traditional'
       };
     }])
+    .controller('userAddCtrl', ['$scope', function ($scope) {
+      $scope.title = "用户信息"
+      $scope.resetUser = function () {
+        $scope.user = "";
+      }
+
+      $scope.saveUser = function () {
+        $scope.resetUser();
+      }
+    }]);
