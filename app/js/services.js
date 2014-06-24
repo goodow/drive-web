@@ -64,7 +64,7 @@ angular.module('drive.services', [])
   .factory('Constant', function(){
       return {
           host:'test.goodow.com',
-          search_channel:'realtime.search',
+          search_channel:'realtime/search',
           serverUrl:"http://test.goodow.com:1986/channel"
       }
   })
