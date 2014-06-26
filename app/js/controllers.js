@@ -1053,3 +1053,69 @@ angular.module('drive.controllers', [])
         lineLegend: 'traditional'
       };
     }])
+    .controller('DeviceChartCtrl', ['$rootScope', '$scope','bus','Constant','DateService', function ($rootScope, $scope,bus,Constant,DateService) {
+      var index = "drive_test";
+      $scope.data = {
+        series: ['所有设备开机次数'],
+        data : []
+      }
+
+      var getData = function(dateIndex){
+        var date = DateService.getWeekDate(dateIndex);
+        var source = {
+          "size": 0,
+          "query": {
+            "range" : {
+              "open" : {
+                "gte" : date,
+                "lte" : date
+              }
+            }
+          },
+          "facets": {
+            "tag": {
+              "terms": {
+                "fields": [
+                  "deviceId"
+                ],
+                "size": 3
+              }
+            }
+          }
+        };
+        var getDeviceActivity = {
+          "action":'search',
+          '_index':index,
+          '_type':"deviceActivity",
+          source:source
+        };
+        bus().send(Constant.search_channel, getDeviceActivity, function(message){
+          var totalCount = message.body().hits.total;
+          var otherCount = message.body().facets.tag.terms;
+          $scope.$apply(function(){
+            $scope.data.data[dateIndex-1] = {
+              x : DateService.getFormatDate(new Date(date)),
+              y: [totalCount]
+            };
+          });
+        });
+      }
+
+      for(var n = 1; n < 8; n++){
+        getData(n);
+      }
+
+
+      //线性表显示
+      $scope.chartType = 'line';
+
+      $scope.config = {
+        labels: false,
+        title : "设备开机统计图 第 " + DateService.getWeekNo() + " 周",
+        legend : {
+          display:true,
+          position:'right'
+        },
+        lineLegend: 'traditional'
+      };
+    }])
