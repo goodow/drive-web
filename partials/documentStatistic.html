@@ -1,0 +1,57 @@
+<div class="panel panel-info" >
+    <!--
+    <div ng-repeat="data in tables">
+        <div  good-grid good-index="{{data.index}}" good-type="{{data.type}}" good-url="{{data.url}}">
+    </div>
+    -->
+    <div class="panel-heading ">
+        <h3 class="panel-title">{{title}}</h3>
+    </div>
+    <div style="margin: 10px 10px">
+        <input type="text" style="width:300px;float: left" class="form-control" placeholder="请输入关键字" ng-model="search_tx">
+        <button type="submit" style="clear: both;margin-left:10px" class="btn btn-default" ng-click="searchClick();"><span class="glyphicon glyphicon-search"></span></button>
+    </div>
+    <div>
+        <table style="margin-bottom:0px"  class="table table-striped table-bordered table-hover table-condensed">
+            <tbody>
+            <tr><th ng-repeat="headerTh in tableHeader">{{headerTh}}</th>
+                <th>设备总数</th><th>播放次数</th><th>文件类型</th><th>查看详情</th></tr>
+            <tr ng-repeat="bodyTr in tableBody">
+                <th ng-repeat="bodyTd in bodyTr track by $index" >{{bodyTd}}</th>
+                <th class="col-md-1">{{deviceOpen[$index]}}</th>
+                <th class="col-md-1">{{openCount[$index]}}</th>
+                <th class="col-md-1"><img class="fileicon" title="{{attachmentType[$index]}}" ng-src='img/fileicons/{{attachmentType[$index]}}.png'/></th>
+                <th class="col-md-1"><button class="btn btn-default" ng-click="open($index)">查看</button></th>
+            </tr></tbody>
+        </table>
+    </div>
+    <div class="panel-footer text-center">
+        <button class="btn btn-default" style="margin-left: 5px" ng-click="prePage($event)">Pre</button>
+        <button class="btn {{page.className_}}" style="margin-left: 5px" ng-click="gotoPage(page.pageNo)" ng-repeat="page in pageTotal">{{page.pageNo}}</button>
+        <button class="btn btn-default" style="margin-left: 5px" ng-click="nextPage($event)">Next</button>
+    </div>
+</div>
+<script type="text/ng-template" id="myModalContent.html">
+    <div class="modal-header">
+        <h3 class="modal-title">文件播放详情</h3>
+    </div>
+    <div class="modal-body">
+        <table style="margin-bottom:0px" class="table table-striped">
+            <thead>
+            <tr>
+                <th>设备MAC</th>
+                <th>播放次数</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr ng-repeat="item in items">
+                <td>{{item.term}}</td>
+                <td>{{item.count}}</td>
+            </tr>
+            </tbody>
+        </table>
+    </div>
+    <div style="margin-top:0px" class="modal-footer">
+        <button class="btn btn-primary" ng-click="cancel()">关闭</button>
+    </div>
+</script>

@@ -1,0 +1,65 @@
+<div class="panel panel-info">
+    <div class="panel-heading ">
+        <h3 class="panel-title">{{title}}</h3>
+    </div>
+    <div class="panel-body">
+        <form name="userInfoForm" class="form-horizontal" role="form">
+            <div class="form-group">
+                <label for="username" class="col-sm-2 control-label">用户名：</label>
+
+                <div class="col-sm-4">
+                    <input type="text" name="username" ng-model="user.username" class="form-control" id="username"
+                           placeholder="username"
+                           required>
+                </div>
+                <label for="username" class="text-danger control-label">*</label>
+            </div>
+            <div class="form-group">
+                <label for="password" class="col-sm-2 control-label">密码：</label>
+
+                <div class="col-sm-4">
+                    <input type="password" name="password" ng-model="user.password" class="form-control" id="password"
+                           placeholder="password"
+                           required>
+                </div>
+                <label for="password" class="control-label text-danger">*</label>
+            </div>
+            <div class="form-group">
+                <label for="confirm" class="col-sm-2 control-label">确认密码：</label>
+
+                <div class="col-sm-4">
+                    <input type="password" name="confirm" ng-model="user.confirm" class="form-control" id="confirm"
+                           placeholder="confirm" required>
+                </div>
+                <label for="confirm" class="text-danger control-label">*</label>
+                <label for="confirm" class="text-danger control-label"
+                       ng-show="user.password != user.confirm && user.password != null && user.confirm != null">密码不一致！</label>
+            </div>
+            <div class="form-group">
+                <label for="realname" class="col-sm-2 control-label">真实姓名：</label>
+
+                <div class="col-sm-4">
+                    <input type="text" name="realname" ng-model="user.realname" class="form-control" id="realname"
+                           placeholder="realname"
+                           required>
+                </div>
+                <label for="realname" class="control-label text-danger">*</label>
+            </div>
+            <div class="form-group">
+                <label for="phone" class="col-sm-2 control-label">联系电话：</label>
+
+                <div class="col-sm-4">
+                    <input type="tel" name="phone" ng-model="user.phone" class="form-control" id="phone"
+                           placeholder="phone">
+                </div>
+                <label for="phone" class="control-label">（<label class="text-danger">*</label> 所标选项为必填项！）</label>
+            </div>
+        </form>
+    </div>
+    <div class="panel-footer text-center">
+        <button class="btn btn-default" ng-disabled="!userInfoForm.$valid || user.password != user.confirm" style="margin-left: 5px"
+                ng-click="saveUser()">save
+        </button>
+        <button class="btn btn-default" style="margin-left: 5px" ng-click="resetUser()">cancle</button>
+    </div>
+</div>
