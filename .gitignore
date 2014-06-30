@@ -34,5 +34,5 @@ com_crashlytics_export_strings.xml
 
 app/bower_components/
 scripts/mods/
-build/
+app/build/
 node_modules/

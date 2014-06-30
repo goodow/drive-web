@@ -4,5 +4,8 @@
     "angular-route":"1.2.14",
     "angular-cookies": "~1.2.0-rc.2",
     "goodjs-grid":"shangmin1990/bower-goodjs-grid"
+  },
+  "resolutions":{
+    "angular": "1.2.14"
   }
 }
