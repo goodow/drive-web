@@ -36,3 +36,4 @@ app/bower_components/
 scripts/mods/
 app/build/
 node_modules/
+app/lib

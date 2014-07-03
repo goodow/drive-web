@@ -3,9 +3,12 @@ var $ = require('gulp-load-plugins')();
 var concat = require('gulp-concat');
 var uglify = require('gulp-uglify');
 var cssmin = require('gulp-cssmin');
+var bower = require('gulp-bower');
+var mkdirp = require("mkdirp");
 var del = require('del');
 var browserSync = require('browser-sync');
 var reload = browserSync.reload;
+var gulpBowerFiles = require('gulp-bower-files');
 
 
 var paths={
@@ -56,5 +59,16 @@ gulp.task('serve',function() {
     });
 });
 
-gulp.task('default',['uglify','concat','cssmin']);
+//gulp.task('bower', function() {
+//    bower()
+//        .pipe(gulp.dest('app/bower_components'));
+//});
+gulp.task("bower-files", function(){
+    gulpBowerFiles().pipe(gulp.dest("app/lib"));
+//    del("app/bower_components",function(err){
+//        console.log(err);
+//    })
+});
+
+gulp.task('default',['bower-files','uglify','concat','cssmin']);
 

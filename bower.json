@@ -1,11 +1,11 @@
 {
   "name": "drive-web",
   "dependencies": {
-    "angular-route":"1.2.14",
+    "angular-route": "1.2.14",
     "angular-cookies": "~1.2.0-rc.2",
-    "goodjs-grid":"shangmin1990/bower-goodjs-grid"
+    "goodjs-grid": "shangmin1990/bower-goodjs-grid"
   },
-  "resolutions":{
+  "resolutions": {
     "angular": "1.2.14"
   }
 }

@@ -4,7 +4,7 @@ node_js:
 before_script:
 - git config --global user.email "Goodow Bot"
 - git config --global user.name "dev@goodow.com"
-- cd gh-pages/ && git pull origin gh-pages && git remote set-url origin "https://${GH_TOKEN}@github.com/shangmin1990/drive-web.git"
+- cd gh-pages/ && git pull origin gh-pages && git remote set-url origin "https://${GH_TOKEN}@github.com/goodow/drive-web.git"
 - cd ${TRAVIS_BUILD_DIR}
 script:
 - bower install
@@ -18,4 +18,4 @@ after_script:
 - cd ${TRAVIS_BUILD_DIR}
 env:
   global:
-  - secure: iGGMyT6VN7gUr7BdACbruYVw5I42/+yCFZP8LSYhgBVD6tAOZR40RglGcmVytCJwM/6g/ltDIxySmCaSpoXTZfhcu2xyvLPso3Z35k24F2Xwmfvnz5P3JwDb7XqUEiH6KfVZMFnfCMjgR7Q8K1k+QvOhWsDwGgk6uQyQnqKiM8Q=
+  - secure: OUoOno46B790w5FM0gtF3MsRj4wonOBHHck7f5gT+5YLSiqyDXjMd39ca35puCNxqKGyIRSQqAuzdprfJsZrA7B/YkeRKQxk8I1mNOpW+t/VQ7d95BruBoJnHFLg6Z+zE7+2Yf8AKtR3AOLdJU+Qn3pXXgFJrsmUf8DFJrguEEk=
